@@ -57,8 +57,6 @@ int main(){
 
     SDL_Event event;
 
-    bool exit = false;
-
     std::vector<std::vector<int>> grid 
     {
     {0,0,0,0,0,0,0,0},
@@ -70,6 +68,10 @@ int main(){
     };
 
     int PIECE_SIZE=50;
+    bool mouseClicked=false;
+    bool exit = false;
+    SDL_Point mousePos;
+
     while(!exit){
         while (SDL_PollEvent(&event))
         {
@@ -78,6 +80,14 @@ int main(){
                 case SDL_QUIT:
                     exit = true;
                     break;
+
+                case SDL_MOUSEBUTTONDOWN:
+                    mouseClicked = true;
+                    break;
+
+                case SDL_MOUSEBUTTONUP:
+                    mouseClicked = false;
+                    
 
                 // Get rect under cursor click - change the corresponding value to another number
 
@@ -91,13 +101,21 @@ int main(){
 
         for(int i=0;i<grid.size();i++){
             for(int j=0;j<grid[0].size();j++){
-            
-            std::vector<int> rgb = getCellColour(grid[i][j]);
+                SDL_Rect rect{PIECE_SIZE*j + 1, PIECE_SIZE*i + 1, PIECE_SIZE, PIECE_SIZE};
 
-            SDL_SetRenderDrawColor(rend, rgb[0], rgb[1], rgb[2], 1);
-            SDL_Rect rect{PIECE_SIZE*j + 1, PIECE_SIZE*i + 1, PIECE_SIZE, PIECE_SIZE};
-            SDL_RenderDrawRect(rend, &rect);
-            SDL_RenderFillRect(rend, &rect);
+                if(mouseClicked){
+                    SDL_GetMouseState(&mousePos.x, &mousePos.y);
+                    if(SDL_PointInRect(&mousePos,&rect)){
+                        grid[i][j] = 1;
+                    }
+                }
+                
+
+                std::vector<int> rgb = getCellColour(grid[i][j]);
+
+                SDL_SetRenderDrawColor(rend, rgb[0], rgb[1], rgb[2], 1);
+                SDL_RenderDrawRect(rend, &rect);
+                SDL_RenderFillRect(rend, &rect);
             }
         }
 
