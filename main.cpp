@@ -81,15 +81,15 @@ int main(){
                     exit = true;
                     break;
 
+                //Fix this to distinguish between lmb and rmb
+
                 case SDL_MOUSEBUTTONDOWN:
                     mouseClicked = true;
                     break;
 
                 case SDL_MOUSEBUTTONUP:
                     mouseClicked = false;
-                    
-
-                // Get rect under cursor click - change the corresponding value to another number
+                    break;
 
             }
             
