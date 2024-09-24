@@ -9,13 +9,19 @@
 const int DEFAULT = 0;
 const int WALL = 1;
 const int TARGET = 2;
+const int START = 3;
 
+const int start_x=3,start_y=2;
+const int target_x=15,target_y=15;
 
 std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultVal){
 
 
     std::vector<int> subArray(columns,defaultVal);
     std::vector<std::vector<int>> grid(rows,subArray);
+
+    grid[start_y][start_x] = START;
+    grid[target_y][target_x] = TARGET;
 
     return grid;
 
@@ -36,9 +42,13 @@ std::vector<int> getCellColour(int currentCell){
 
     else if (currentCell == TARGET)
     {
-        rgbVector = {0,255,0};
+        rgbVector = {255,0,0};
     }
     
+    else if (currentCell == START){
+        rgbVector= {0,0,255};
+    }
+
     return rgbVector;
 
 }
@@ -68,10 +78,10 @@ int main(){
     SDL_Event event;
 
 
-    int columns=50,rows=50;
-    std::vector<std::vector<int>> grid = initialiseGrid(columns,rows,0);
+    int columns=25,rows=25;
+    std::vector<std::vector<int>> grid = initialiseGrid(columns,rows,DEFAULT);
 
-    int PIECE_SIZE=10;
+    int PIECE_SIZE=30;
     bool drawMode=false;
     bool eraseMode=false;
     bool exit = false;
@@ -90,7 +100,7 @@ int main(){
 
                 case SDL_KEYDOWN:
                     if(event.key.keysym.sym == SDLK_r){
-                        grid = initialiseGrid(columns,rows,0);
+                        grid = initialiseGrid(columns,rows,DEFAULT);
                     }
 
                 case SDL_MOUSEBUTTONDOWN:
@@ -131,15 +141,15 @@ int main(){
 
                 if(drawMode){
                     SDL_GetMouseState(&mousePos.x, &mousePos.y);
-                    if(SDL_PointInRect(&mousePos,&rect)){
-                        grid[i][j] = 1;
+                    if(SDL_PointInRect(&mousePos,&rect) && grid[i][j] != TARGET && grid[i][j] != START){
+                        grid[i][j] = WALL;
                     }
                 }
 
                 else if (eraseMode){
                     SDL_GetMouseState(&mousePos.x, &mousePos.y);
-                    if(SDL_PointInRect(&mousePos,&rect)){
-                        grid[i][j] = 0;
+                    if(SDL_PointInRect(&mousePos,&rect)&& grid[i][j] != TARGET && grid[i][j] != START){
+                        grid[i][j] = DEFAULT;
                     }
                 }
                 
