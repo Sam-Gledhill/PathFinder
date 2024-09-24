@@ -135,19 +135,19 @@ int main(){
         SDL_SetRenderDrawColor(rend, 0, 0, 0, 1);
         SDL_RenderClear(rend);
 
+
+        SDL_GetMouseState(&mousePos.x, &mousePos.y);
         for(int i=0;i<grid.size();i++){
             for(int j=0;j<grid[0].size();j++){
                 SDL_Rect rect{PIECE_SIZE*j + 1, PIECE_SIZE*i + 1, PIECE_SIZE, PIECE_SIZE};
 
                 if(drawMode){
-                    SDL_GetMouseState(&mousePos.x, &mousePos.y);
                     if(SDL_PointInRect(&mousePos,&rect) && grid[i][j] != TARGET && grid[i][j] != START){
                         grid[i][j] = WALL;
                     }
                 }
 
                 else if (eraseMode){
-                    SDL_GetMouseState(&mousePos.x, &mousePos.y);
                     if(SDL_PointInRect(&mousePos,&rect)&& grid[i][j] != TARGET && grid[i][j] != START){
                         grid[i][j] = DEFAULT;
                     }
