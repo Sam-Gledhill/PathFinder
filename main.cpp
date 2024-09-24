@@ -68,7 +68,8 @@ int main(){
     };
 
     int PIECE_SIZE=50;
-    bool mouseClicked=false;
+    bool drawMode=false;
+    bool eraseMode=false;
     bool exit = false;
     SDL_Point mousePos;
 
@@ -84,11 +85,27 @@ int main(){
                 //Fix this to distinguish between lmb and rmb
 
                 case SDL_MOUSEBUTTONDOWN:
-                    mouseClicked = true;
+
+                    if(event.button.button == SDL_BUTTON_LEFT){
+                        drawMode = true;
+                    }
+
+                    else if(event.button.button == SDL_BUTTON_RIGHT){
+                        eraseMode = true;
+                    }
+
                     break;
 
                 case SDL_MOUSEBUTTONUP:
-                    mouseClicked = false;
+
+                    if(event.button.button == SDL_BUTTON_LEFT){
+                        drawMode = false;
+                    }
+
+                    else if(event.button.button == SDL_BUTTON_RIGHT){
+                        eraseMode = false;
+                    }
+
                     break;
 
             }
@@ -103,10 +120,17 @@ int main(){
             for(int j=0;j<grid[0].size();j++){
                 SDL_Rect rect{PIECE_SIZE*j + 1, PIECE_SIZE*i + 1, PIECE_SIZE, PIECE_SIZE};
 
-                if(mouseClicked){
+                if(drawMode){
                     SDL_GetMouseState(&mousePos.x, &mousePos.y);
                     if(SDL_PointInRect(&mousePos,&rect)){
                         grid[i][j] = 1;
+                    }
+                }
+
+                else if (eraseMode){
+                    SDL_GetMouseState(&mousePos.x, &mousePos.y);
+                    if(SDL_PointInRect(&mousePos,&rect)){
+                        grid[i][j] = 0;
                     }
                 }
                 
