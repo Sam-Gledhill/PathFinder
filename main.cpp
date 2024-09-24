@@ -10,9 +10,54 @@ const int DEFAULT = 0;
 const int WALL = 1;
 const int TARGET = 2;
 const int START = 3;
+const int SEEN = 4;
 
 const int start_x=3,start_y=2;
 const int target_x=15,target_y=15;
+
+float euclidianDistance(float x1, float y1, float x2, float y2){
+    float dx = x2-x1;
+    float dy = y2-y1;
+
+    return sqrt(dx*dx + dy*dy);
+}
+
+std::vector<std::vector<int>> getAdjacentCoords(int i, int j, int width, int height){
+    std::vector<std::vector<int>> adjacentCoords;
+
+    if(i-1 >= 0){
+        adjacentCoords.push_back({i-1,j});
+    }
+
+    if(i+1 < width){
+        adjacentCoords.push_back({i+1,j});
+    }
+
+    if(j-1 >=0){
+        adjacentCoords.push_back({i,j-1});
+    }
+
+    if(j+1 < height){
+        adjacentCoords.push_back({i,j+1});
+    }
+
+    return adjacentCoords;
+
+}
+
+
+//Do breadth first search first
+//Follow through with A* - same but nodes are weighted with euclidian distance 
+
+std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid){
+    
+    std::vector<std::vector<int>> visitedCoords;
+    std::vector<std::vector<int>> queue;
+    std::vector<std::vector<int>> finalPath;
+
+    return finalPath;
+}
+
 
 std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultVal){
 
@@ -47,6 +92,10 @@ std::vector<int> getCellColour(int currentCell){
     
     else if (currentCell == START){
         rgbVector= {0,0,255};
+    }
+
+    else if (currentCell == SEEN){
+        rgbVector= {255,0,255};
     }
 
     return rgbVector;
