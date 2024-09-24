@@ -11,6 +11,16 @@ const int WALL = 1;
 const int TARGET = 2;
 
 
+std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultVal){
+
+
+    std::vector<int> subArray(columns,defaultVal);
+    std::vector<std::vector<int>> grid(rows,subArray);
+
+    return grid;
+
+}
+
 std::vector<int> getCellColour(int currentCell){
 
     std::vector<int> rgbVector;
@@ -57,17 +67,11 @@ int main(){
 
     SDL_Event event;
 
-    std::vector<std::vector<int>> grid 
-    {
-    {0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0}
-    };
 
-    int PIECE_SIZE=50;
+    int columns=50,rows=50;
+    std::vector<std::vector<int>> grid = initialiseGrid(columns,rows,0);
+
+    int PIECE_SIZE=10;
     bool drawMode=false;
     bool eraseMode=false;
     bool exit = false;
@@ -83,6 +87,11 @@ int main(){
                     break;
 
                 //Fix this to distinguish between lmb and rmb
+
+                case SDL_KEYDOWN:
+                    if(event.key.keysym.sym == SDLK_r){
+                        grid = initialiseGrid(columns,rows,0);
+                    }
 
                 case SDL_MOUSEBUTTONDOWN:
 
