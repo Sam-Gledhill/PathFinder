@@ -49,11 +49,72 @@ std::vector<std::vector<int>> getAdjacentCoords(int i, int j, int width, int hei
 //Do breadth first search first
 //Follow through with A* - same but nodes are weighted with euclidian distance 
 
-std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid){
+//Start at start_x, start_y
+//Explore all neighbouring nodes -> check for target
+//Explore all nodes that neighbour those nodes
+//Repeat until target found
+
+std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>> grid, std::vector<std::vector<int>> coordVector){
+
+    for(auto coord: coordVector){
+        grid[coord[1]][coord[0]] = 1;
+    }
+
+    return grid;
+}
+
+bool coordSeen(std::vector<int> &coord,std::vector<std::vector<int>>& seenVector){
+    for(auto x: seenVector){
+        if(coord==x){
+            return true;
+        }
+    }
+    return false;
+}
+
+std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, int width, int height){
     
     std::vector<std::vector<int>> visitedCoords;
-    std::vector<std::vector<int>> queue;
+    std::vector<std::vector<int>> queue{{start_x,start_y}};
     std::vector<std::vector<int>> finalPath;
+    bool targetFound = false;
+    const std::vector<int> TARGET_COORDS = {target_x,target_y};
+    while(!targetFound){
+        std::vector<std::vector<int>> tmp;
+        for(int i = 0; i< queue.size();i++){
+            auto coord = queue[i];
+
+            if ( coordSeen(coord,visitedCoords) ){
+                continue;
+            }
+
+            
+            auto adjacentTiles = getAdjacentCoords(coord[0],coord[1], width, height);
+            for(auto x: adjacentTiles){
+                
+                if(coordSeen(x,queue)){
+                    continue;
+                }
+                
+                if(x == TARGET_COORDS){
+                    targetFound == true;
+                }
+                tmp.push_back(x);
+            }
+        }
+        visitedCoords.insert(visitedCoords.end(),tmp.begin(),tmp.end());
+
+        queue = tmp;
+        
+        for (auto x: queue){
+            std::cout << x[0] << " " << x[1] << " ";
+            std::cout << euclidianDistance(start_x,start_y,x[0],x[1]) << std::endl;
+        }
+        std::cout << queue.size() << std::endl;
+        tmp = {};
+    }
+
+    std::cout << "found" << std::endl;
 
     return finalPath;
 }
@@ -135,6 +196,8 @@ int main(){
     bool eraseMode=false;
     bool exit = false;
     SDL_Point mousePos;
+
+    breadthFirst(grid,columns,rows);
 
     while(!exit){
         while (SDL_PollEvent(&event))
