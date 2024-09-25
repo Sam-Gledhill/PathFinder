@@ -5,6 +5,7 @@
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_mouse.h>
 #include <vector>
+#include <exception>
 
 const int DEFAULT = 0;
 const int WALL = 1;
@@ -54,7 +55,7 @@ std::vector<std::vector<int>> getAdjacentCoords(int i, int j, int width, int hei
 //Explore all nodes that neighbour those nodes
 //Repeat until target found
 
-std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>> grid, std::vector<std::vector<int>> coordVector){
+std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, std::vector<std::vector<int>> coordVector){
 
     for(auto coord: coordVector){
         grid[coord[1]][coord[0]] = 1;
@@ -63,7 +64,7 @@ std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>> grid, std
     return grid;
 }
 
-bool coordSeen(std::vector<int> &coord,std::vector<std::vector<int>>& seenVector){
+bool coordSeen(std::vector<int> coord,std::vector<std::vector<int>> seenVector){
     for(auto x: seenVector){
         if(coord==x){
             return true;
@@ -78,39 +79,49 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
     std::vector<std::vector<int>> queue{{start_x,start_y}};
     std::vector<std::vector<int>> finalPath;
     bool targetFound = false;
-    const std::vector<int> TARGET_COORDS = {target_x,target_y};
     while(!targetFound){
         std::vector<std::vector<int>> tmp;
         for(int i = 0; i< queue.size();i++){
             auto coord = queue[i];
-
+            
             if ( coordSeen(coord,visitedCoords) ){
                 continue;
             }
 
             
-            auto adjacentTiles = getAdjacentCoords(coord[0],coord[1], width, height);
-            for(auto x: adjacentTiles){
+            auto adjacentTiles = getAdjacentCoords(coord[1],coord[0], width, height);
+            for(auto adjCoord: adjacentTiles){
                 
-                if(coordSeen(x,queue)){
+                //If adjacent coord already in queue, continue
+                if(coordSeen(adjCoord,queue)|| coordSeen(adjCoord,tmp)){
                     continue;
                 }
                 
-                if(x == TARGET_COORDS){
+                //If adjacent coord is a target, end.
+                if(adjCoord[1] == target_x && adjCoord[0]==target_y){
                     targetFound == true;
                 }
-                tmp.push_back(x);
+
+                tmp.push_back(adjCoord);
             }
         }
-        visitedCoords.insert(visitedCoords.end(),tmp.begin(),tmp.end());
+        visitedCoords.insert(visitedCoords.end(),queue.begin(),queue.end());
+
+        if (tmp.size() == 0){
+            drawCoords(grid,visitedCoords);
+            std::cout << targetFound << std::endl;
+            return grid;
+        }
 
         queue = tmp;
-        
+
         for (auto x: queue){
-            std::cout << x[0] << " " << x[1] << " ";
-            std::cout << euclidianDistance(start_x,start_y,x[0],x[1]) << std::endl;
+            float r = euclidianDistance(start_x,start_y,x[0],x[1]); 
+            if(tmp.size() == 0){
+                throw -1;
+            }
+            // std::cout << r << std::endl;
         }
-        std::cout << queue.size() << std::endl;
         tmp = {};
     }
 
@@ -197,7 +208,7 @@ int main(){
     bool exit = false;
     SDL_Point mousePos;
 
-    breadthFirst(grid,columns,rows);
+    grid = breadthFirst(grid,columns,rows);
 
     while(!exit){
         while (SDL_PollEvent(&event))
