@@ -13,9 +13,10 @@ const int WALL = 1;
 const int TARGET = 2;
 const int START = 3;
 const int SEEN = 4;
+const int PATH = 5;
 
-const int start_x=3,start_y=2;
-const int target_x=15,target_y=15;
+const int start_x=2,start_y=2;
+const int target_x=22,target_y=20;
 
 float euclidianDistance(float x1, float y1, float x2, float y2){
     float dx = x2-x1;
@@ -72,8 +73,6 @@ std::vector<std::vector<int>> getAdjacentCoords(int i, int j, int width, int hei
 //Explore all nodes that neighbour those nodes
 //Repeat until target found
 
-//*std::min_element(v.begin(),v.end())
-
 std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, std::vector<std::vector<int>> coordVector){
 
     for(auto coord: coordVector){
@@ -108,7 +107,7 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
     std::vector<std::vector<int>> finalPath;
     bool targetFound = false;
 
-    const int NUM_ITERATIONS = 26;
+    const int NUM_ITERATIONS = 100;
     int itCounter = 0;
 
     while(!targetFound && (itCounter < NUM_ITERATIONS) ){
@@ -130,7 +129,8 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
                     std::cout << targetFound << std::endl;
                     std::cout << adjCoord[0] << " " << adjCoord[1] << std::endl;
 
-                    drawCoords(grid, visitedCoords); //also draw tmp?
+                    // drawCoords(grid, visitedCoords); //also draw tmp?
+                    drawCoords(grid, finalPath);
                     return grid;
                 }
 
@@ -144,7 +144,7 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
         }
         visitedCoords.insert(visitedCoords.end(),queue.begin(),queue.end());
 
-        minEuclidianCoord(queue);
+        finalPath.push_back( minEuclidianCoord(queue) );
 
         if (tmp.size() == 0){
             std::cout << "NO TARGET FOUND" << std::endl;
@@ -204,6 +204,10 @@ std::vector<int> getCellColour(int currentCell){
 
     else if (currentCell == SEEN){
         rgbVector= {255,0,255};
+    }
+
+    else if (currentCell == PATH){
+        rgbVector= {255,255,0};
     }
 
     return rgbVector;
