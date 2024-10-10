@@ -6,6 +6,7 @@
 #include <SDL2/SDL_mouse.h>
 #include <vector>
 #include <exception>
+#include <algorithm>
 
 const int DEFAULT = 0;
 const int WALL = 1;
@@ -55,6 +56,8 @@ std::vector<std::vector<int>> getAdjacentCoords(int i, int j, int width, int hei
 //Explore all neighbouring nodes -> check for target
 //Explore all nodes that neighbour those nodes
 //Repeat until target found
+
+//*std::min_element(v.begin(),v.end())
 
 std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, std::vector<std::vector<int>> coordVector){
 
@@ -112,6 +115,7 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
                     std::cout << targetFound << std::endl;
                     std::cout << adjCoord[0] << " " << adjCoord[1] << std::endl;
 
+                    drawCoords(grid, visitedCoords);
                     return grid;
                 }
 
@@ -148,7 +152,6 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
 
 
 std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultVal){
-
 
     std::vector<int> subArray(columns,defaultVal);
     std::vector<std::vector<int>> grid(rows,subArray);
