@@ -24,6 +24,21 @@ float euclidianDistance(float x1, float y1, float x2, float y2){
     return sqrt(dx*dx + dy*dy);
 }
 
+std::vector<int> minEuclidianCoord(const std::vector<std::vector<int>> &queue){
+
+    std::vector<float> euclidianVector;
+
+    for(auto coord: queue){
+        euclidianVector.push_back(euclidianDistance(coord[0],coord[1],target_x,target_y));
+    }
+
+    auto it = std::min_element(euclidianVector.begin(),euclidianVector.end());
+
+    size_t minIndex = it-euclidianVector.begin();
+
+    return queue[minIndex];
+}
+
 std::vector<std::vector<int>> getAdjacentCoords(int i, int j, int width, int height){
 
     std::vector<std::vector<int>> adjacentCoords;
@@ -115,7 +130,7 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
                     std::cout << targetFound << std::endl;
                     std::cout << adjCoord[0] << " " << adjCoord[1] << std::endl;
 
-                    drawCoords(grid, visitedCoords);
+                    drawCoords(grid, visitedCoords); //also draw tmp?
                     return grid;
                 }
 
@@ -128,6 +143,8 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
             }
         }
         visitedCoords.insert(visitedCoords.end(),queue.begin(),queue.end());
+
+        minEuclidianCoord(queue);
 
         if (tmp.size() == 0){
             std::cout << "NO TARGET FOUND" << std::endl;
