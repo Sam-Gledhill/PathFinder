@@ -24,6 +24,7 @@ float euclidianDistance(float x1, float y1, float x2, float y2){
 }
 
 std::vector<std::vector<int>> getAdjacentCoords(int i, int j, int width, int height){
+
     std::vector<std::vector<int>> adjacentCoords;
 
     if(i-1 >= 0){
@@ -48,7 +49,7 @@ std::vector<std::vector<int>> getAdjacentCoords(int i, int j, int width, int hei
 
 
 //Do breadth first search first
-//Follow through with A* - same but nodes are weighted with euclidian distance 
+//Follow through with A* - same but nodes are weighted with euclidian distance
 
 //Start at start_x, start_y
 //Explore all neighbouring nodes -> check for target
@@ -58,6 +59,15 @@ std::vector<std::vector<int>> getAdjacentCoords(int i, int j, int width, int hei
 std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, std::vector<std::vector<int>> coordVector){
 
     for(auto coord: coordVector){
+
+        if(coord[1] == start_y && coord[0] == start_x){
+            continue;
+        }
+
+        if(coord[1] == target_y && coord[0] == target_x){
+            continue;
+        }
+
         grid[coord[1]][coord[0]] = 1;
     }
 
@@ -74,32 +84,40 @@ bool coordSeen(std::vector<int> coord,std::vector<std::vector<int>> seenVector){
 }
 
 std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, int width, int height){
-    
+
     std::vector<std::vector<int>> visitedCoords;
     std::vector<std::vector<int>> queue{{start_x,start_y}};
     std::vector<std::vector<int>> finalPath;
     bool targetFound = false;
-    while(!targetFound){
+
+    const int NUM_ITERATIONS = 26;
+    int itCounter = 0;
+
+    while(!targetFound && (itCounter < NUM_ITERATIONS) ){
         std::vector<std::vector<int>> tmp;
         for(int i = 0; i< queue.size();i++){
             auto coord = queue[i];
-            
+
             if ( coordSeen(coord,visitedCoords) ){
                 continue;
             }
 
-            
+
             auto adjacentTiles = getAdjacentCoords(coord[1],coord[0], width, height);
             for(auto adjCoord: adjacentTiles){
-                
-                //If adjacent coord already in queue, continue
-                if(coordSeen(adjCoord,queue)|| coordSeen(adjCoord,tmp)){
-                    continue;
-                }
-                
+
                 //If adjacent coord is a target, end.
                 if(adjCoord[1] == target_x && adjCoord[0]==target_y){
                     targetFound == true;
+                    std::cout << targetFound << std::endl;
+                    std::cout << adjCoord[0] << " " << adjCoord[1] << std::endl;
+
+                    return grid;
+                }
+
+                //If adjacent coord already in queue, continue
+                if(coordSeen(adjCoord,queue)|| coordSeen(adjCoord,tmp)){
+                    continue;
                 }
 
                 tmp.push_back(adjCoord);
@@ -108,26 +126,24 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
         visitedCoords.insert(visitedCoords.end(),queue.begin(),queue.end());
 
         if (tmp.size() == 0){
-            drawCoords(grid,visitedCoords);
-            std::cout << targetFound << std::endl;
-            return grid;
+            std::cout << "NO TARGET FOUND" << std::endl;
+            return {};
         }
 
         queue = tmp;
 
         for (auto x: queue){
-            float r = euclidianDistance(start_x,start_y,x[0],x[1]); 
+            float r = euclidianDistance(start_x,start_y,x[0],x[1]);
             if(tmp.size() == 0){
                 throw -1;
             }
             // std::cout << r << std::endl;
         }
         tmp = {};
+        itCounter ++ ;
     }
 
-    std::cout << "found" << std::endl;
-
-    return finalPath;
+    return {};
 }
 
 
