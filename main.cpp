@@ -86,7 +86,7 @@ std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, st
             continue;
         }
 
-        grid[coord[1]][coord[0]] = 1;
+        grid[coord[1]][coord[0]] = SEEN;
     }
 
     return grid;
