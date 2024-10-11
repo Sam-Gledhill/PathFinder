@@ -7,6 +7,7 @@
 #include <vector>
 #include <exception>
 #include <algorithm>
+#include <climits>
 
 const int DEFAULT = 0;
 const int WALL = 1;
@@ -133,7 +134,7 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
     std::vector<std::vector<int>> finalPath;
     bool targetFound = false;
 
-    const int NUM_ITERATIONS = 100;
+    const int NUM_ITERATIONS = INT_MAX;
     int itCounter = 0;
 
     auto pathMemory = initialisePathMemory(grid); //Pick a better variable name for this
