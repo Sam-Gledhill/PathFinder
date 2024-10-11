@@ -94,7 +94,7 @@ std::vector<std::vector<int>> getFinalPath(const std::vector<std::vector<std::ve
 
 
 
-    return {}
+    return {};
 }
 
 std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, const std::vector<std::vector<int>> &coordVector, const int& COLOUR){
@@ -149,7 +149,7 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
             for(auto adjCoord: adjacentTiles){
 
 
-                pathMemory[adjCoord[1]][adjCoord[0]] = coord //Sets adjacent coord's parent as coord.
+                pathMemory[adjCoord[1]][adjCoord[0]] = coord; //Sets adjacent coord's parent as coord.
 
                 //If adjacent coord is a target, end.
                 if(adjCoord[1] == TARGET_X && adjCoord[0]==TARGET_Y){
