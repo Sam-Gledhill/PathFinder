@@ -84,6 +84,8 @@ std::vector<std::vector<std::vector<int>>> initialisePathMemory(const std::vecto
     std::vector<std::vector<int>> subArray(grid[0].size(),coords);
     std::vector<std::vector<std::vector<int>>> pathMemory(grid.size(),subArray);
 
+    pathMemory[START_Y][START_X] = {INT_MAX,INT_MAX};
+
     return pathMemory;
 }
 
@@ -91,10 +93,24 @@ std::vector<std::vector<int>> getFinalPath(const std::vector<std::vector<std::ve
 
     std::vector<std::vector<int>> finalPath;
 
+    std::vector<int> currentCoord = pathMemory[TARGET_Y][TARGET_X];
 
+    std::cout << currentCoord[0] << currentCoord[1] << std::endl;
 
+    size_t MAX_ITER = 100;
+    size_t iter = 0;
 
-    return {};
+    while (currentCoord[0] != START_X && currentCoord[1] != START_Y){
+        finalPath.push_back(currentCoord);
+        currentCoord = pathMemory[currentCoord[1]][currentCoord[0]];
+        iter ++;
+
+        if(iter >= MAX_ITER){
+            return finalPath;
+        }
+    }
+
+    return finalPath;
 }
 
 std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, const std::vector<std::vector<int>> &coordVector, const int& COLOUR){
@@ -152,12 +168,14 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
                 pathMemory[adjCoord[1]][adjCoord[0]] = coord; //Sets adjacent coord's parent as coord.
 
                 //If adjacent coord is a target, end.
-                if(adjCoord[1] == TARGET_X && adjCoord[0]==TARGET_Y){
+                if(adjCoord[1] == TARGET_Y && adjCoord[0]==TARGET_X){
                     targetFound == true;
-                    std::cout << targetFound << std::endl;
-                    std::cout << adjCoord[0] << " " << adjCoord[1] << std::endl;
+                    std::cout << "Target Found" << std::endl;
 
                     // drawCoords(grid, visitedCoords); //also draw tmp?
+
+                    auto finalPath = getFinalPath(pathMemory);
+
                     drawCoords(grid, finalPath,PATH);
                     return grid;
                 }
@@ -171,8 +189,6 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
             }
         }
         visitedCoords.insert(visitedCoords.end(),queue.begin(),queue.end());
-
-        finalPath.push_back( minEuclidianCoord(queue) );
 
         if (tmp.size() == 0){
             std::cout << "NO TARGET FOUND" << std::endl;
