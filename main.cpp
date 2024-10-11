@@ -180,13 +180,6 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
 
         queue = tmp;
 
-        for (auto x: queue){
-            float r = euclidianDistance(start_x,start_y,x[0],x[1]);
-            if(tmp.size() == 0){
-                throw -1;
-            }
-            // std::cout << r << std::endl;
-        }
         tmp = {};
         itCounter ++ ;
     }
