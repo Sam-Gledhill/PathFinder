@@ -99,7 +99,7 @@ std::vector<std::vector<std::vector<int>>> initialisePathMemory(const std::vecto
 //Have a list which stores the previous node traversed to
 //When new coord added to queue, add a value to pathMemory that contains the value the queue was generated from.
 
-std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, std::vector<std::vector<int>> coordVector){
+std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, const std::vector<std::vector<int>> &coordVector, const int& COLOUR){
 
     for(auto coord: coordVector){
 
@@ -111,7 +111,7 @@ std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, st
             continue;
         }
 
-        grid[coord[1]][coord[0]] = SEEN;
+        grid[coord[1]][coord[0]] = COLOUR;
     }
 
     return grid;
@@ -157,7 +157,7 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
                     std::cout << adjCoord[0] << " " << adjCoord[1] << std::endl;
 
                     // drawCoords(grid, visitedCoords); //also draw tmp?
-                    drawCoords(grid, finalPath);
+                    drawCoords(grid, finalPath,PATH);
                     return grid;
                 }
 
