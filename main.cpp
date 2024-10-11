@@ -65,6 +65,29 @@ std::vector<std::vector<int>> getAdjacentCoords(int i, int j, int width, int hei
 }
 
 
+std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultVal){
+
+    std::vector<int> subArray(columns,defaultVal);
+    std::vector<std::vector<int>> grid(rows,subArray);
+
+    grid[start_y][start_x] = START;
+    grid[target_y][target_x] = TARGET;
+
+    return grid;
+
+}
+
+std::vector<std::vector<std::vector<int>>> initialisePathMemory(const std::vector<std::vector<int>> &grid){
+
+    //Creates a second array which tells the program where the previous visited point is.
+
+    std::vector<int> coords(2,0);
+    std::vector<std::vector<int>> subArray(grid[0].size(),coords);
+    std::vector<std::vector<std::vector<int>>> pathMemory(grid.size(),subArray);
+
+    return pathMemory;
+}
+
 //Do breadth first search first
 //Follow through with A* - same but nodes are weighted with euclidian distance
 
@@ -72,6 +95,9 @@ std::vector<std::vector<int>> getAdjacentCoords(int i, int j, int width, int hei
 //Explore all neighbouring nodes -> check for target
 //Explore all nodes that neighbour those nodes
 //Repeat until target found
+
+//Have a list which stores the previous node traversed to
+//When new coord added to queue, add a value to pathMemory that contains the value the queue was generated from.
 
 std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, std::vector<std::vector<int>> coordVector){
 
@@ -110,6 +136,8 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
     const int NUM_ITERATIONS = 100;
     int itCounter = 0;
 
+    auto pathMemory = initialisePathMemory(grid); //Pick a better variable name for this
+
     while(!targetFound && (itCounter < NUM_ITERATIONS) ){
         std::vector<std::vector<int>> tmp;
         for(int i = 0; i< queue.size();i++){
@@ -118,7 +146,6 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
             if ( coordSeen(coord,visitedCoords) ){
                 continue;
             }
-
 
             auto adjacentTiles = getAdjacentCoords(coord[1],coord[0], width, height);
             for(auto adjCoord: adjacentTiles){
@@ -167,18 +194,6 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
     return {};
 }
 
-
-std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultVal){
-
-    std::vector<int> subArray(columns,defaultVal);
-    std::vector<std::vector<int>> grid(rows,subArray);
-
-    grid[start_y][start_x] = START;
-    grid[target_y][target_x] = TARGET;
-
-    return grid;
-
-}
 
 std::vector<int> getCellColour(int currentCell){
 
