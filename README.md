@@ -3,6 +3,9 @@
 
 Dynamic path-finding demo written in SDL2
 
+## Demo
+
+DEMO GOES HERE
 
 ## Installation & Running
 
@@ -39,11 +42,6 @@ Windows (untested)
 - Display mode for showing path-finding algorithm in real-time
 - Mulitple path-finding algorithms to choose from
 - SDL2
-
-
-## Demo
-
-DEMO GOES HERE
 
 
 ## Authors
