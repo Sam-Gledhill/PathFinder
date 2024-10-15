@@ -25,6 +25,13 @@ float euclidianDistance(float x1, float y1, float x2, float y2){
 
     return sqrt(dx*dx + dy*dy);
 }
+//Replace all implementations of coord with this struct
+// struct{
+//     int x;
+//     int y;
+//     int xParent;
+//     int yParent;
+// } coord;
 
 std::vector<int> minEuclidianCoord(const std::vector<std::vector<int>> &queue){
 
