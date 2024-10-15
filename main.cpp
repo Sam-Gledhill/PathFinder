@@ -41,24 +41,24 @@ std::vector<int> minEuclidianCoord(const std::vector<std::vector<int>> &queue){
     return queue[minIndex];
 }
 
-std::vector<std::vector<int>> getAdjacentCoords(int i, int j, int width, int height){
+std::vector<std::vector<int>> getAdjacentCoords(int x, int y, int width, int height){
 
     std::vector<std::vector<int>> adjacentCoords;
 
-    if(i-1 >= 0){
-        adjacentCoords.push_back({i-1,j});
+    if(x-1 >= 0){
+        adjacentCoords.push_back({x-1,y});
     }
 
-    if(i+1 < width){
-        adjacentCoords.push_back({i+1,j});
+    if(x+1 < width){
+        adjacentCoords.push_back({x+1,y});
     }
 
-    if(j-1 >=0){
-        adjacentCoords.push_back({i,j-1});
+    if(y-1 >=0){
+        adjacentCoords.push_back({x,y-1});
     }
 
-    if(j+1 < height){
-        adjacentCoords.push_back({i,j+1});
+    if(y+1 < height){
+        adjacentCoords.push_back({x,y+1});
     }
 
     return adjacentCoords;
