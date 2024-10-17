@@ -160,7 +160,7 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
                 continue;
             }
 
-            auto adjacentTiles = getAdjacentCoords(coord[1],coord[0], width, height);
+            auto adjacentTiles = getAdjacentCoords(coord[0],coord[1], width, height);
             for(auto adjCoord: adjacentTiles){
 
 
