@@ -286,12 +286,8 @@ int main(){
 
         if (deltaTime < 1000.0/FPS){
             continue;
-        }
-
-        else{
-            initialTime = currentTime;
-            std::cout << 1000.0/deltaTime << " " << FPS << std::endl;
-        }
+        }   
+        initialTime = currentTime;
 
 
         while (SDL_PollEvent(&event))
