@@ -275,7 +275,26 @@ int main(){
 
     grid = breadthFirst(grid,columns,rows);
 
+    Uint32 initialTime = SDL_GetTicks();
+    Uint32 currentTime;
+    Uint32 deltaTime;
+    float FPS = 30.0;
+
     while(!exit){
+
+        currentTime = SDL_GetTicks();
+        deltaTime = currentTime - initialTime;
+
+        if (deltaTime < 1000.0/FPS){
+            continue;
+        }
+
+        else{
+            initialTime = currentTime;
+            std::cout << 1000.0/deltaTime << " " << FPS << std::endl;
+        }
+
+
         while (SDL_PollEvent(&event))
         {
             switch(event.type){
