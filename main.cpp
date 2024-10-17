@@ -104,6 +104,7 @@ std::vector<std::vector<int>> getFinalPath(const std::vector<std::vector<std::ve
         iter ++;
 
         if(iter >= MAX_ITER){
+            std::cout << "PATH NOT FOUND" << std::endl;
             return finalPath;
         }
     }
