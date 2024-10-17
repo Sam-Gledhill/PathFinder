@@ -163,6 +163,10 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
             auto adjacentTiles = getAdjacentCoords(coord[0],coord[1], width, height);
             for(auto adjCoord: adjacentTiles){
 
+                
+                if(coordSeen(adjCoord,tmp)){ //This probably needs to be here
+                    continue;
+                }
 
                 pathMemory[adjCoord[1]][adjCoord[0]] = coord; //Sets adjacent coord's parent as coord.
 
@@ -180,9 +184,9 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
                 }
 
                 //If adjacent coord already in queue, continue
-                if(coordSeen(adjCoord,queue)|| coordSeen(adjCoord,tmp)){
-                    continue;
-                }
+                //if(coordSeen(adjCoord,queue)|| coordSeen(adjCoord,tmp)){
+                //    continue;
+                //}
 
                 tmp.push_back(adjCoord);
             }
