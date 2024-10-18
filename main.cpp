@@ -95,7 +95,7 @@ std::vector<std::vector<int>> getFinalPath(const std::vector<std::vector<std::ve
 
     std::vector<int> currentCoord = pathMemory[TARGET_Y][TARGET_X];
 
-    size_t MAX_ITER = 100;
+    size_t MAX_ITER = INT_MAX;
     size_t iter = 0;
 
     while (!(currentCoord[0] == START_X && currentCoord[1] == START_Y)){
