@@ -95,7 +95,7 @@ std::vector<std::vector<int>> getFinalPath(const std::vector<std::vector<std::ve
 
     std::vector<int> currentCoord = pathMemory[TARGET_Y][TARGET_X];
 
-    size_t MAX_ITER = 100;
+    size_t MAX_ITER = INT_MAX;
     size_t iter = 0;
 
     while (!(currentCoord[0] == START_X && currentCoord[1] == START_Y)){
@@ -163,7 +163,8 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
             auto adjacentTiles = getAdjacentCoords(coord[0],coord[1], width, height);
             for(auto adjCoord: adjacentTiles){
 
-                if(coordSeen(adjCoord,tmp) || pathMemory[adjCoord[1]][adjCoord[0]][0] != -1 ){ //This probably needs to be here
+                //abstract this logic
+                if(coordSeen(adjCoord,tmp) || pathMemory[adjCoord[1]][adjCoord[0]][0] != -1 || grid[adjCoord[1]][adjCoord[0]]==WALL){ //This probably needs to be here
                     continue;
                 }
 
@@ -306,6 +307,18 @@ int main(){
                 case SDL_KEYDOWN:
                     if(event.key.keysym.sym == SDLK_r){
                         grid = initialiseGrid(columns,rows,DEFAULT);
+                    }
+
+                    else if(event.key.keysym.sym == SDLK_f){
+                        for(int i = 0; i < rows; i++){
+                            for(int j = 0; j < columns; j++){
+                                if(grid[i][j]== PATH){
+                                    grid[i][j] = DEFAULT;
+                                }
+                            }
+                        }
+                        grid = breadthFirst(grid,columns,rows);
+
                     }
 
                 case SDL_MOUSEBUTTONDOWN:
