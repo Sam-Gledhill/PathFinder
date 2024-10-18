@@ -164,7 +164,7 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
             for(auto adjCoord: adjacentTiles){
 
                 
-                if(coordSeen(adjCoord,tmp)){ //This probably needs to be here
+                if(coordSeen(adjCoord,tmp) || pathMemory[adjCoord[1]][adjCoord[0]][0] != -1 ){ //This probably needs to be here
                     continue;
                 }
 
