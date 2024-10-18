@@ -6,15 +6,18 @@
 #include <SDL2/SDL_mouse.h>
 #include <vector>
 #include <exception>
+#include <algorithm>
+#include <climits>
 
 const int DEFAULT = 0;
 const int WALL = 1;
 const int TARGET = 2;
 const int START = 3;
 const int SEEN = 4;
+const int PATH = 5;
 
-const int start_x=3,start_y=2;
-const int target_x=15,target_y=15;
+const int START_X=2,START_Y=2;
+const int TARGET_X=22,TARGET_Y=20;
 
 float euclidianDistance(float x1, float y1, float x2, float y2){
     float dx = x2-x1;
@@ -23,42 +26,105 @@ float euclidianDistance(float x1, float y1, float x2, float y2){
     return sqrt(dx*dx + dy*dy);
 }
 
-std::vector<std::vector<int>> getAdjacentCoords(int i, int j, int width, int height){
+std::vector<int> minEuclidianCoord(const std::vector<std::vector<int>> &queue){
+
+    std::vector<float> euclidianVector;
+
+    for(auto coord: queue){
+        euclidianVector.push_back(euclidianDistance(coord[0],coord[1],TARGET_X,TARGET_Y));
+    }
+
+    auto it = std::min_element(euclidianVector.begin(),euclidianVector.end());
+
+    size_t minIndex = it-euclidianVector.begin();
+
+    return queue[minIndex];
+}
+
+std::vector<std::vector<int>> getAdjacentCoords(int x, int y, int width, int height){
+
     std::vector<std::vector<int>> adjacentCoords;
 
-    if(i-1 >= 0){
-        adjacentCoords.push_back({i-1,j});
+    if(x-1 >= 0){
+        adjacentCoords.push_back({x-1,y});
     }
 
-    if(i+1 < width){
-        adjacentCoords.push_back({i+1,j});
+    if(x+1 < width){
+        adjacentCoords.push_back({x+1,y});
     }
 
-    if(j-1 >=0){
-        adjacentCoords.push_back({i,j-1});
+    if(y-1 >=0){
+        adjacentCoords.push_back({x,y-1});
     }
 
-    if(j+1 < height){
-        adjacentCoords.push_back({i,j+1});
+    if(y+1 < height){
+        adjacentCoords.push_back({x,y+1});
     }
 
     return adjacentCoords;
 
 }
 
+std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultVal){
 
-//Do breadth first search first
-//Follow through with A* - same but nodes are weighted with euclidian distance 
+    std::vector<int> subArray(columns,defaultVal);
+    std::vector<std::vector<int>> grid(rows,subArray);
 
-//Start at start_x, start_y
-//Explore all neighbouring nodes -> check for target
-//Explore all nodes that neighbour those nodes
-//Repeat until target found
+    grid[START_Y][START_X] = START;
+    grid[TARGET_Y][TARGET_X] = TARGET;
 
-std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, std::vector<std::vector<int>> coordVector){
+    return grid;
+}
+
+std::vector<std::vector<std::vector<int>>> initialisePathMemory(const std::vector<std::vector<int>> &grid){
+
+    //Creates a second array which tells the program where the previous visited point is.
+
+    std::vector<int> coords(2,-1);
+    std::vector<std::vector<int>> subArray(grid[0].size(),coords);
+    std::vector<std::vector<std::vector<int>>> pathMemory(grid.size(),subArray);
+
+    pathMemory[START_Y][START_X] = {INT_MAX,INT_MAX};
+
+    return pathMemory;
+}
+
+std::vector<std::vector<int>> getFinalPath(const std::vector<std::vector<std::vector<int>>>& pathMemory){
+
+    std::vector<std::vector<int>> finalPath;
+
+    std::vector<int> currentCoord = pathMemory[TARGET_Y][TARGET_X];
+
+    size_t MAX_ITER = 100;
+    size_t iter = 0;
+
+    while (!(currentCoord[0] == START_X && currentCoord[1] == START_Y)){
+        finalPath.push_back(currentCoord);
+        currentCoord = pathMemory[currentCoord[1]][currentCoord[0]];
+        iter ++;
+
+        if(iter >= MAX_ITER){
+            std::cout << "PATH NOT FOUND" << std::endl;
+            return finalPath;
+        }
+    }
+
+    return finalPath;
+}
+
+std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, const std::vector<std::vector<int>> &coordVector, const int& COLOUR){
 
     for(auto coord: coordVector){
-        grid[coord[1]][coord[0]] = 1;
+
+        if(coord[1] == START_Y && coord[0] == START_X){
+            continue;
+        }
+
+        if(coord[1] == TARGET_Y && coord[0] == TARGET_X){
+            continue;
+        }
+
+        grid[coord[1]][coord[0]] = COLOUR;
     }
 
     return grid;
@@ -74,33 +140,52 @@ bool coordSeen(std::vector<int> coord,std::vector<std::vector<int>> seenVector){
 }
 
 std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, int width, int height){
-    
+
     std::vector<std::vector<int>> visitedCoords;
-    std::vector<std::vector<int>> queue{{start_x,start_y}};
+    std::vector<std::vector<int>> queue{{START_X,START_Y}};
     std::vector<std::vector<int>> finalPath;
     bool targetFound = false;
-    while(!targetFound){
+
+    const int NUM_ITERATIONS = INT_MAX;
+    int itCounter = 0;
+
+    auto pathMemory = initialisePathMemory(grid); //Pick a better variable name for this
+
+    while(!targetFound && (itCounter < NUM_ITERATIONS) ){
         std::vector<std::vector<int>> tmp;
         for(int i = 0; i< queue.size();i++){
             auto coord = queue[i];
-            
+
             if ( coordSeen(coord,visitedCoords) ){
                 continue;
             }
 
-            
-            auto adjacentTiles = getAdjacentCoords(coord[1],coord[0], width, height);
+            auto adjacentTiles = getAdjacentCoords(coord[0],coord[1], width, height);
             for(auto adjCoord: adjacentTiles){
-                
-                //If adjacent coord already in queue, continue
-                if(coordSeen(adjCoord,queue)|| coordSeen(adjCoord,tmp)){
+
+                if(coordSeen(adjCoord,tmp) || pathMemory[adjCoord[1]][adjCoord[0]][0] != -1 ){ //This probably needs to be here
                     continue;
                 }
-                
+
+                pathMemory[adjCoord[1]][adjCoord[0]] = coord; //Sets adjacent coord's parent as coord.
+
                 //If adjacent coord is a target, end.
-                if(adjCoord[1] == target_x && adjCoord[0]==target_y){
+                if(adjCoord[1] == TARGET_Y && adjCoord[0]==TARGET_X){
                     targetFound == true;
+                    std::cout << "Target Found" << std::endl;
+
+                    // drawCoords(grid, visitedCoords); //also draw tmp?
+
+                    auto finalPath = getFinalPath(pathMemory);
+
+                    drawCoords(grid, finalPath,PATH);
+                    return grid;
                 }
+
+                //If adjacent coord already in queue, continue
+                //if(coordSeen(adjCoord,queue)|| coordSeen(adjCoord,tmp)){
+                //    continue;
+                //}
 
                 tmp.push_back(adjCoord);
             }
@@ -108,41 +193,19 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
         visitedCoords.insert(visitedCoords.end(),queue.begin(),queue.end());
 
         if (tmp.size() == 0){
-            drawCoords(grid,visitedCoords);
-            std::cout << targetFound << std::endl;
-            return grid;
+            std::cout << "NO TARGET FOUND" << std::endl;
+            return {};
         }
 
         queue = tmp;
 
-        for (auto x: queue){
-            float r = euclidianDistance(start_x,start_y,x[0],x[1]); 
-            if(tmp.size() == 0){
-                throw -1;
-            }
-            // std::cout << r << std::endl;
-        }
         tmp = {};
+        itCounter ++ ;
     }
 
-    std::cout << "found" << std::endl;
-
-    return finalPath;
+    return {};
 }
 
-
-std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultVal){
-
-
-    std::vector<int> subArray(columns,defaultVal);
-    std::vector<std::vector<int>> grid(rows,subArray);
-
-    grid[start_y][start_x] = START;
-    grid[target_y][target_x] = TARGET;
-
-    return grid;
-
-}
 
 std::vector<int> getCellColour(int currentCell){
 
@@ -168,6 +231,10 @@ std::vector<int> getCellColour(int currentCell){
 
     else if (currentCell == SEEN){
         rgbVector= {255,0,255};
+    }
+
+    else if (currentCell == PATH){
+        rgbVector= {255,255,0};
     }
 
     return rgbVector;
@@ -210,7 +277,22 @@ int main(){
 
     grid = breadthFirst(grid,columns,rows);
 
+    Uint32 initialTime = SDL_GetTicks();
+    Uint32 currentTime;
+    Uint32 deltaTime;
+    float FPS = 30.0;
+
     while(!exit){
+
+        currentTime = SDL_GetTicks();
+        deltaTime = currentTime - initialTime;
+
+        if (deltaTime < 1000.0/FPS){
+            continue;
+        }   
+        initialTime = currentTime;
+
+
         while (SDL_PollEvent(&event))
         {
             switch(event.type){
