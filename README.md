@@ -5,7 +5,8 @@ Dynamic path-finding demo written in SDL2
 
 ## Demo
 
-DEMO GOES HERE
+![image](https://github.com/user-attachments/assets/4c902d35-f963-467c-93d0-006c2a1eae5b)
+
 
 ## Installation & Running
 
@@ -39,8 +40,8 @@ Windows (untested)
 
 - Dynamic path-finding around obstacles
 - Ability to draw and remove new obstacles
-- Display mode for showing path-finding algorithm in real-time
-- Mulitple path-finding algorithms to choose from
+- Display mode for showing path-finding algorithm in real-time (WIP)
+- Mulitple path-finding algorithms to choose from (WIP)
 - SDL2
 
 
