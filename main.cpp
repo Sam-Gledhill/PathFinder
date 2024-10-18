@@ -80,7 +80,7 @@ std::vector<std::vector<std::vector<int>>> initialisePathMemory(const std::vecto
 
     //Creates a second array which tells the program where the previous visited point is.
 
-    std::vector<int> coords(2,0);
+    std::vector<int> coords(2,-1);
     std::vector<std::vector<int>> subArray(grid[0].size(),coords);
     std::vector<std::vector<std::vector<int>>> pathMemory(grid.size(),subArray);
 
