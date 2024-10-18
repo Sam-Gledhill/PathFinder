@@ -98,7 +98,7 @@ std::vector<std::vector<int>> getFinalPath(const std::vector<std::vector<std::ve
     size_t MAX_ITER = 100;
     size_t iter = 0;
 
-    while (currentCoord[0] != START_X && currentCoord[1] != START_Y){
+    while (!(currentCoord[0] == START_X && currentCoord[1] == START_Y)){
         finalPath.push_back(currentCoord);
         currentCoord = pathMemory[currentCoord[1]][currentCoord[0]];
         iter ++;
@@ -163,7 +163,6 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
             auto adjacentTiles = getAdjacentCoords(coord[0],coord[1], width, height);
             for(auto adjCoord: adjacentTiles){
 
-                
                 if(coordSeen(adjCoord,tmp) || pathMemory[adjCoord[1]][adjCoord[0]][0] != -1 ){ //This probably needs to be here
                     continue;
                 }
