@@ -309,6 +309,18 @@ int main(){
                         grid = initialiseGrid(columns,rows,DEFAULT);
                     }
 
+                    else if(event.key.keysym.sym == SDLK_f){
+                        for(int i = 0; i < rows; i++){
+                            for(int j = 0; j < columns; j++){
+                                if(grid[i][j]== PATH){
+                                    grid[i][j] = DEFAULT;
+                                }
+                            }
+                        }
+                        grid = breadthFirst(grid,columns,rows);
+
+                    }
+
                 case SDL_MOUSEBUTTONDOWN:
 
                     if(event.button.button == SDL_BUTTON_LEFT){
