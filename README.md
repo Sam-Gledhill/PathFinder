@@ -5,7 +5,8 @@ Dynamic path-finding demo written in SDL2
 
 ## Demo
 
-DEMO GOES HERE
+![image](https://github.com/user-attachments/assets/4c902d35-f963-467c-93d0-006c2a1eae5b)
+
 
 ## Installation & Running
 
