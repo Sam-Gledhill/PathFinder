@@ -242,6 +242,17 @@ std::vector<int> getCellColour(int currentCell){
 
 }
 
+std::vector<std::vector<int>> recalculatePath(std::vector<std::vector<int>> grid, int rows, int columns){
+    for(int i = 0; i < rows; i++){
+        for(int j = 0; j < columns; j++){
+            if(grid[i][j]== PATH){
+                grid[i][j] = DEFAULT;
+            }
+        }
+    }
+    return breadthFirst(grid,columns,rows);
+}
+
 int main(){
 
     // returns zero on success else non-zero
@@ -302,22 +313,13 @@ int main(){
                     exit = true;
                     break;
 
-                //Fix this to distinguish between lmb and rmb
-
                 case SDL_KEYDOWN:
                     if(event.key.keysym.sym == SDLK_r){
                         grid = initialiseGrid(columns,rows,DEFAULT);
                     }
 
                     else if(event.key.keysym.sym == SDLK_f){
-                        for(int i = 0; i < rows; i++){
-                            for(int j = 0; j < columns; j++){
-                                if(grid[i][j]== PATH){
-                                    grid[i][j] = DEFAULT;
-                                }
-                            }
-                        }
-                        grid = breadthFirst(grid,columns,rows);
+                        grid = recalculatePath(grid,rows,columns);
 
                     }
 
@@ -335,15 +337,8 @@ int main(){
 
                 case SDL_MOUSEBUTTONUP:
 
-                    for(int i = 0; i < rows; i++){
-                        for(int j = 0; j < columns; j++){
-                            if(grid[i][j]== PATH){
-                                grid[i][j] = DEFAULT;
-                            }
-                        }
-                    }
-                    grid = breadthFirst(grid,columns,rows);
 
+                    grid = recalculatePath(grid,rows,columns);
 
 
                     if(event.button.button == SDL_BUTTON_LEFT){
