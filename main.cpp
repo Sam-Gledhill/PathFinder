@@ -285,6 +285,7 @@ int main(){
 
     bool ctrlModifier=false;
     bool movingStart=false;
+    bool movingTarget=false;
     bool drawMode=false;
     bool eraseMode=false;
     bool exit = false;
@@ -342,7 +343,12 @@ int main(){
                     }
 
                     else if(event.button.button == SDL_BUTTON_RIGHT){
-                        eraseMode = true;
+                        if(ctrlModifier){
+                            movingTarget = true;
+                        }
+                        else{
+                            eraseMode = true;
+                        }
                     }
 
                     break;
@@ -359,6 +365,7 @@ int main(){
                     }
 
                     else if(event.button.button == SDL_BUTTON_RIGHT){
+                        movingTarget = false;
                         eraseMode = false;
                     }
 
@@ -399,6 +406,15 @@ int main(){
                         grid[i][j] = START;
                     }
 
+                }
+
+                else if (movingTarget){
+                    if(SDL_PointInRect(&mousePos,&rect)&& grid[i][j] != START){
+                        grid[TARGET_Y][TARGET_X] = DEFAULT;
+                        TARGET_X = j;
+                        TARGET_Y = i;
+                        grid[i][j] = TARGET;
+                    }
                 }
 
                 std::vector<int> rgb = getCellColour(grid[i][j]);
