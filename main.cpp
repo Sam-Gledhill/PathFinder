@@ -195,7 +195,7 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
 
         if (tmp.size() == 0){
             std::cout << "NO TARGET FOUND" << std::endl;
-            return {};
+            return grid;
         }
 
         queue = tmp;
