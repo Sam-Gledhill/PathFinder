@@ -330,6 +330,14 @@ int main(){
                         grid = recalculatePath(grid,rows,columns);
 
                     }
+                    break;
+
+                case SDL_KEYUP:
+                    if (event.key.keysym.sym == SDLK_LCTRL){
+                        ctrlModifier = false;
+                    }
+                    break;
+
 
                 case SDL_MOUSEBUTTONDOWN:
 
