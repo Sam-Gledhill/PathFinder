@@ -16,8 +16,8 @@ const int START = 3;
 const int SEEN = 4;
 const int PATH = 5;
 
-int START_X=2,START_Y=2;
-int TARGET_X=22,TARGET_Y=20;
+int startX=2,startY=2;
+int targetX=22,targetY=20;
 
 float euclidianDistance(float x1, float y1, float x2, float y2){
     float dx = x2-x1;
@@ -31,7 +31,7 @@ std::vector<int> minEuclidianCoord(const std::vector<std::vector<int>> &queue){
     std::vector<float> euclidianVector;
 
     for(auto coord: queue){
-        euclidianVector.push_back(euclidianDistance(coord[0],coord[1],TARGET_X,TARGET_Y));
+        euclidianVector.push_back(euclidianDistance(coord[0],coord[1],targetX,targetY));
     }
 
     auto it = std::min_element(euclidianVector.begin(),euclidianVector.end());
@@ -70,8 +70,8 @@ std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultV
     std::vector<int> subArray(columns,defaultVal);
     std::vector<std::vector<int>> grid(rows,subArray);
 
-    grid[START_Y][START_X] = START;
-    grid[TARGET_Y][TARGET_X] = TARGET;
+    grid[startY][startX] = START;
+    grid[targetY][targetX] = TARGET;
 
     return grid;
 }
@@ -84,7 +84,7 @@ std::vector<std::vector<std::vector<int>>> initialisePathMemory(const std::vecto
     std::vector<std::vector<int>> subArray(grid[0].size(),coords);
     std::vector<std::vector<std::vector<int>>> pathMemory(grid.size(),subArray);
 
-    pathMemory[START_Y][START_X] = {INT_MAX,INT_MAX};
+    pathMemory[startY][startX] = {INT_MAX,INT_MAX};
 
     return pathMemory;
 }
@@ -93,12 +93,12 @@ std::vector<std::vector<int>> getFinalPath(const std::vector<std::vector<std::ve
 
     std::vector<std::vector<int>> finalPath;
 
-    std::vector<int> currentCoord = pathMemory[TARGET_Y][TARGET_X];
+    std::vector<int> currentCoord = pathMemory[targetY][targetX];
 
     size_t MAX_ITER = INT_MAX;
     size_t iter = 0;
 
-    while (!(currentCoord[0] == START_X && currentCoord[1] == START_Y)){
+    while (!(currentCoord[0] == startX && currentCoord[1] == startY)){
         finalPath.push_back(currentCoord);
         currentCoord = pathMemory[currentCoord[1]][currentCoord[0]];
         iter ++;
@@ -116,11 +116,11 @@ std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, co
 
     for(auto coord: coordVector){
 
-        if(coord[1] == START_Y && coord[0] == START_X){
+        if(coord[1] == startY && coord[0] == startX){
             continue;
         }
 
-        if(coord[1] == TARGET_Y && coord[0] == TARGET_X){
+        if(coord[1] == targetY && coord[0] == targetX){
             continue;
         }
 
@@ -142,7 +142,7 @@ bool coordSeen(std::vector<int> coord,std::vector<std::vector<int>> seenVector){
 std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, int width, int height){
 
     std::vector<std::vector<int>> visitedCoords;
-    std::vector<std::vector<int>> queue{{START_X,START_Y}};
+    std::vector<std::vector<int>> queue{{startX,startY}};
     std::vector<std::vector<int>> finalPath;
     bool targetFound = false;
 
@@ -171,7 +171,7 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
                 pathMemory[adjCoord[1]][adjCoord[0]] = coord; //Sets adjacent coord's parent as coord.
 
                 //If adjacent coord is a target, end.
-                if(adjCoord[1] == TARGET_Y && adjCoord[0]==TARGET_X){
+                if(adjCoord[1] == targetY && adjCoord[0]==targetX){
                     targetFound == true;
                     std::cout << "Target Found" << std::endl;
 
@@ -400,9 +400,9 @@ int main(){
                 else if (movingStart){
                     if(SDL_PointInRect(&mousePos,&rect)&& grid[i][j] != TARGET){
 
-                        grid[START_Y][START_X] = DEFAULT;
-                        START_X = j;
-                        START_Y = i;
+                        grid[startY][startX] = DEFAULT;
+                        startX = j;
+                        startY = i;
                         grid[i][j] = START;
                     }
 
@@ -410,9 +410,9 @@ int main(){
 
                 else if (movingTarget){
                     if(SDL_PointInRect(&mousePos,&rect)&& grid[i][j] != START){
-                        grid[TARGET_Y][TARGET_X] = DEFAULT;
-                        TARGET_X = j;
-                        TARGET_Y = i;
+                        grid[targetY][targetX] = DEFAULT;
+                        targetX = j;
+                        targetY = i;
                         grid[i][j] = TARGET;
                     }
                 }
