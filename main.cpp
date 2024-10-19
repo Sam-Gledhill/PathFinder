@@ -16,8 +16,8 @@ const int START = 3;
 const int SEEN = 4;
 const int PATH = 5;
 
-const int START_X=2,START_Y=2;
-const int TARGET_X=22,TARGET_Y=20;
+int START_X=2,START_Y=2;
+int TARGET_X=22,TARGET_Y=20;
 
 float euclidianDistance(float x1, float y1, float x2, float y2){
     float dx = x2-x1;
@@ -282,6 +282,9 @@ int main(){
     std::vector<std::vector<int>> grid = initialiseGrid(columns,rows,DEFAULT);
 
     int PIECE_SIZE=30;
+
+    bool ctrlModifier=false;
+    bool movingStart=false;
     bool drawMode=false;
     bool eraseMode=false;
     bool exit = false;
@@ -318,6 +321,10 @@ int main(){
                         grid = initialiseGrid(columns,rows,DEFAULT);
                     }
 
+                    else if (event.key.keysym.sym == SDLK_LCTRL){
+                        ctrlModifier = true;
+                    }
+
                     else if(event.key.keysym.sym == SDLK_f){
                         grid = recalculatePath(grid,rows,columns);
 
@@ -326,7 +333,12 @@ int main(){
                 case SDL_MOUSEBUTTONDOWN:
 
                     if(event.button.button == SDL_BUTTON_LEFT){
+                        if(ctrlModifier){
+                            movingStart = true;
+                        }
+                        else{
                         drawMode = true;
+                        }
                     }
 
                     else if(event.button.button == SDL_BUTTON_RIGHT){
@@ -342,6 +354,7 @@ int main(){
 
 
                     if(event.button.button == SDL_BUTTON_LEFT){
+                        movingStart = false;
                         drawMode = false;
                     }
 
@@ -376,7 +389,17 @@ int main(){
                         grid[i][j] = DEFAULT;
                     }
                 }
-                
+
+                else if (movingStart){
+                    if(SDL_PointInRect(&mousePos,&rect)&& grid[i][j] != TARGET){
+
+                        grid[START_Y][START_X] = DEFAULT;
+                        START_X = j;
+                        START_Y = i;
+                        grid[i][j] = START;
+                    }
+
+                }
 
                 std::vector<int> rgb = getCellColour(grid[i][j]);
 
