@@ -69,13 +69,13 @@ std::vector<std::vector<int>> getAdjacentCoords(int x, int y, int width, int hei
 
 }
 
-std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultVal){
+std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultVal, int startVal, int targetVal){
 
     std::vector<int> subArray(columns,defaultVal);
     std::vector<std::vector<int>> grid(rows,subArray);
 
-    grid[startY][startX] = START;
-    grid[targetY][targetX] = TARGET;
+    grid[startY][startX] = startVal;
+    grid[targetY][targetX] = targetVal;
 
     return grid;
 }
@@ -281,7 +281,7 @@ int main(){
 
 
     int columns=25,rows=25;
-    std::vector<std::vector<int>> grid = initialiseGrid(columns,rows,DEFAULT);
+    std::vector<std::vector<int>> grid = initialiseGrid(columns,rows,DEFAULT,START,TARGET);
 
     int PIECE_SIZE=30;
 
@@ -321,7 +321,7 @@ int main(){
 
                 case SDL_KEYDOWN:
                     if(event.key.keysym.sym == SDLK_r){
-                        grid = initialiseGrid(columns,rows,DEFAULT);
+                        grid = initialiseGrid(columns,rows,DEFAULT,START,TARGET);
                     }
 
                     else if (event.key.keysym.sym == SDLK_LCTRL){
