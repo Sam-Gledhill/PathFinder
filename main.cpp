@@ -19,7 +19,6 @@ const int PATH = 5;
 std::vector<int> startCoords = {2,2};
 std::vector<int> targetCoords = {22,22};
 
-//abstractable
 float euclidianDistance(float x1, float y1, float x2, float y2){
     float dx = x2-x1;
     float dy = y2-y1;
@@ -27,7 +26,6 @@ float euclidianDistance(float x1, float y1, float x2, float y2){
     return sqrt(dx*dx + dy*dy);
 }
 
-//abstractable
 std::vector<int> minEuclidianCoord(const std::vector<std::vector<int>> &queue, const std::vector<int> &targetCoords){
     //returns coordinate closest to the target
 
@@ -45,7 +43,7 @@ std::vector<int> minEuclidianCoord(const std::vector<std::vector<int>> &queue, c
     return queue[minIndex];
 }
 
-//abstractable
+
 std::vector<std::vector<int>> getAdjacentCoords(int x, int y, int width, int height){
 
     std::vector<std::vector<int>> adjacentCoords;
@@ -70,7 +68,7 @@ std::vector<std::vector<int>> getAdjacentCoords(int x, int y, int width, int hei
 
 }
 
-//abstractable
+
 std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultVal, const std::vector<int> &startCoords, const std::vector<int> &targetCoords){
 
     std::vector<int> subArray(columns,defaultVal);
@@ -94,7 +92,7 @@ std::vector<std::vector<std::vector<int>>> initialisePathMemory(const std::vecto
     return pathMemory;
 }
 
-//abstractable
+
 std::vector<std::vector<int>> getFinalPath(const std::vector<std::vector<std::vector<int>>>& pathMemory, const std::vector<int> &startCoords, const std::vector<int> &targetCoords){
 
     std::vector<std::vector<int>> finalPath;
@@ -136,7 +134,7 @@ std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, co
     return grid;
 }
 
-//abstractable
+
 bool coordIn(const std::vector<int> &coord, const std::vector<std::vector<int>> &seenVector){
     for(auto x: seenVector){
         if(coord==x){
