@@ -152,7 +152,7 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
     auto pathMemory = initialisePathMemory(grid); //Pick a better variable name for this
 
     while(!targetFound && (itCounter < NUM_ITERATIONS) ){
-        std::vector<std::vector<int>> seenCoords;
+        std::vector<std::vector<int>> _toAddToQueue;
         for(int i = 0; i< queue.size();i++){
             auto coord = queue[i];
 
@@ -164,7 +164,7 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
             for(auto adjCoord: adjacentTiles){
 
                 //abstract this logic
-                if(coordIn(adjCoord,seenCoords) || pathMemory[adjCoord[1]][adjCoord[0]][0] != -1 || grid[adjCoord[1]][adjCoord[0]]==WALL){ //This probably needs to be here
+                if(coordIn(adjCoord,_toAddToQueue) || pathMemory[adjCoord[1]][adjCoord[0]][0] != -1 || grid[adjCoord[1]][adjCoord[0]]==WALL){ //This probably needs to be here
                     continue;
                 }
 
@@ -183,22 +183,23 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
                     return grid;
                 }
 
-                seenCoords.push_back(adjCoord);
+                _toAddToQueue.push_back(adjCoord);
             }
         }
         visitedCoords.insert(visitedCoords.end(),queue.begin(),queue.end());
 
-        if (seenCoords.size() == 0){
+        if (_toAddToQueue.size() == 0){
             std::cout << "NO TARGET FOUND" << std::endl;
             return grid;
         }
 
-        queue = seenCoords;
+        queue = _toAddToQueue;
 
-        seenCoords = {};
+        _toAddToQueue = {};
         itCounter ++ ;
     }
 
+    std::cout << "Should not reach here" << std::endl;
     return {};
 }
 
