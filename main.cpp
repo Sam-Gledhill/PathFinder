@@ -330,6 +330,11 @@ int main(){
                         grid = recalculatePath(grid,rows,columns);
 
                     }
+
+                    else if(event.key.keysym.sym == SDLK_q){
+                        exit = true;
+                    }
+
                     break;
 
                 case SDL_KEYUP:
