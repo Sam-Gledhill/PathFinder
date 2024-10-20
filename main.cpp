@@ -19,6 +19,7 @@ const int PATH = 5;
 int startX=2,startY=2;
 int targetX=22,targetY=20;
 
+//abstractable
 float euclidianDistance(float x1, float y1, float x2, float y2){
     float dx = x2-x1;
     float dy = y2-y1;
@@ -27,6 +28,8 @@ float euclidianDistance(float x1, float y1, float x2, float y2){
 }
 
 std::vector<int> minEuclidianCoord(const std::vector<std::vector<int>> &queue){
+    //returns coordinate closest to the target
+
 
     std::vector<float> euclidianVector;
 
@@ -41,6 +44,7 @@ std::vector<int> minEuclidianCoord(const std::vector<std::vector<int>> &queue){
     return queue[minIndex];
 }
 
+//abstractable
 std::vector<std::vector<int>> getAdjacentCoords(int x, int y, int width, int height){
 
     std::vector<std::vector<int>> adjacentCoords;
@@ -76,6 +80,7 @@ std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultV
     return grid;
 }
 
+//abstractable
 std::vector<std::vector<std::vector<int>>> initialisePathMemory(const std::vector<std::vector<int>> &grid){
 
     //Creates a second array which tells the program where the previous visited point is.
@@ -130,6 +135,7 @@ std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, co
     return grid;
 }
 
+//abstractable
 bool coordIn(std::vector<int> coord,std::vector<std::vector<int>> seenVector){
     for(auto x: seenVector){
         if(coord==x){
