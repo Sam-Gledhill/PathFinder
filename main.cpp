@@ -5,73 +5,22 @@
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_mouse.h>
 #include <vector>
-#include <exception>
-#include <algorithm>
 #include <climits>
 
-const int DEFAULT = 0;
-const int WALL = 1;
-const int TARGET = 2;
-const int START = 3;
-const int SEEN = 4;
-const int PATH = 5;
+#include "colours.h"
+#include "vector-operations.h"
 
-int startX=2,startY=2;
-int targetX=22,targetY=20;
+std::vector<int> startCoords = {2,2};
+std::vector<int> targetCoords = {22,22};
 
-float euclidianDistance(float x1, float y1, float x2, float y2){
-    float dx = x2-x1;
-    float dy = y2-y1;
 
-    return sqrt(dx*dx + dy*dy);
-}
-
-std::vector<int> minEuclidianCoord(const std::vector<std::vector<int>> &queue){
-
-    std::vector<float> euclidianVector;
-
-    for(auto coord: queue){
-        euclidianVector.push_back(euclidianDistance(coord[0],coord[1],targetX,targetY));
-    }
-
-    auto it = std::min_element(euclidianVector.begin(),euclidianVector.end());
-
-    size_t minIndex = it-euclidianVector.begin();
-
-    return queue[minIndex];
-}
-
-std::vector<std::vector<int>> getAdjacentCoords(int x, int y, int width, int height){
-
-    std::vector<std::vector<int>> adjacentCoords;
-
-    if(x-1 >= 0){
-        adjacentCoords.push_back({x-1,y});
-    }
-
-    if(x+1 < width){
-        adjacentCoords.push_back({x+1,y});
-    }
-
-    if(y-1 >=0){
-        adjacentCoords.push_back({x,y-1});
-    }
-
-    if(y+1 < height){
-        adjacentCoords.push_back({x,y+1});
-    }
-
-    return adjacentCoords;
-
-}
-
-std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultVal){
+std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultVal, const std::vector<int> &startCoords, const std::vector<int> &targetCoords){
 
     std::vector<int> subArray(columns,defaultVal);
     std::vector<std::vector<int>> grid(rows,subArray);
 
-    grid[startY][startX] = START;
-    grid[targetY][targetX] = TARGET;
+    grid[startCoords[1]][startCoords[0]] = START;
+    grid[targetCoords[1]][targetCoords[0]] = TARGET;
 
     return grid;
 }
@@ -84,21 +33,19 @@ std::vector<std::vector<std::vector<int>>> initialisePathMemory(const std::vecto
     std::vector<std::vector<int>> subArray(grid[0].size(),coords);
     std::vector<std::vector<std::vector<int>>> pathMemory(grid.size(),subArray);
 
-    pathMemory[startY][startX] = {INT_MAX,INT_MAX};
-
     return pathMemory;
 }
 
-std::vector<std::vector<int>> getFinalPath(const std::vector<std::vector<std::vector<int>>>& pathMemory){
+std::vector<std::vector<int>> getFinalPath(const std::vector<std::vector<std::vector<int>>>& pathMemory, const std::vector<int> &startCoords, const std::vector<int> &targetCoords){
 
     std::vector<std::vector<int>> finalPath;
 
-    std::vector<int> currentCoord = pathMemory[targetY][targetX];
+    std::vector<int> currentCoord = pathMemory[targetCoords[1]][targetCoords[0]];
 
     size_t MAX_ITER = INT_MAX;
     size_t iter = 0;
 
-    while (!(currentCoord[0] == startX && currentCoord[1] == startY)){
+    while (!(currentCoord[0] == startCoords[0] && currentCoord[1] == startCoords[1])){
         finalPath.push_back(currentCoord);
         currentCoord = pathMemory[currentCoord[1]][currentCoord[0]];
         iter ++;
@@ -112,37 +59,10 @@ std::vector<std::vector<int>> getFinalPath(const std::vector<std::vector<std::ve
     return finalPath;
 }
 
-std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, const std::vector<std::vector<int>> &coordVector, const int& COLOUR){
-
-    for(auto coord: coordVector){
-
-        if(coord[1] == startY && coord[0] == startX){
-            continue;
-        }
-
-        if(coord[1] == targetY && coord[0] == targetX){
-            continue;
-        }
-
-        grid[coord[1]][coord[0]] = COLOUR;
-    }
-
-    return grid;
-}
-
-bool coordIn(std::vector<int> coord,std::vector<std::vector<int>> seenVector){
-    for(auto x: seenVector){
-        if(coord==x){
-            return true;
-        }
-    }
-    return false;
-}
-
-std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, int width, int height){
+std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, const std::vector<int> &startCoords, const std::vector<int> &targetCoords,int width, int height){
 
     std::vector<std::vector<int>> visitedCoords;
-    std::vector<std::vector<int>> queue{{startX,startY}};
+    std::vector<std::vector<int>> queue{{startCoords[0],startCoords[1]}};
     std::vector<std::vector<int>> finalPath;
     bool targetFound = false;
 
@@ -152,7 +72,7 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
     auto pathMemory = initialisePathMemory(grid); //Pick a better variable name for this
 
     while(!targetFound && (itCounter < NUM_ITERATIONS) ){
-        std::vector<std::vector<int>> seenCoords;
+        std::vector<std::vector<int>> _toAddToQueue;
         for(int i = 0; i< queue.size();i++){
             auto coord = queue[i];
 
@@ -164,82 +84,41 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
             for(auto adjCoord: adjacentTiles){
 
                 //abstract this logic
-                if(coordIn(adjCoord,seenCoords) || pathMemory[adjCoord[1]][adjCoord[0]][0] != -1 || grid[adjCoord[1]][adjCoord[0]]==WALL){ //This probably needs to be here
+                if(coordIn(adjCoord,_toAddToQueue) || pathMemory[adjCoord[1]][adjCoord[0]][0] != -1 || grid[adjCoord[1]][adjCoord[0]]==WALL){ //This probably needs to be here
                     continue;
                 }
 
                 pathMemory[adjCoord[1]][adjCoord[0]] = coord; //Sets adjacent coord's parent as coord.
 
                 //If adjacent coord is a target, end.
-                if(adjCoord[1] == targetY && adjCoord[0]==targetX){
+                if(adjCoord == targetCoords){
                     targetFound == true;
                     std::cout << "Target Found" << std::endl;
 
-                    // drawCoords(grid, visitedCoords); //also draw seenCoords?
+                    auto finalPath = getFinalPath(pathMemory,startCoords,targetCoords);
 
-                    auto finalPath = getFinalPath(pathMemory);
-
-                    drawCoords(grid, finalPath,PATH);
+                    drawCoords(grid, finalPath,PATH, startCoords, targetCoords);
                     return grid;
                 }
 
-                //If adjacent coord already in queue, continue
-                //if(coordIn(adjCoord,queue)|| coordIn(adjCoord,seenCoords)){
-                //    continue;
-                //}
-
-                seenCoords.push_back(adjCoord);
+                _toAddToQueue.push_back(adjCoord);
             }
         }
         visitedCoords.insert(visitedCoords.end(),queue.begin(),queue.end());
 
-        if (seenCoords.size() == 0){
+        if (_toAddToQueue.size() == 0){
             std::cout << "NO TARGET FOUND" << std::endl;
             return grid;
         }
 
-        queue = seenCoords;
+        queue = _toAddToQueue;
 
-        seenCoords = {};
+        _toAddToQueue = {};
         itCounter ++ ;
     }
 
+    std::cout << "Should not reach here" << std::endl;
     return {};
-}
-
-
-std::vector<int> getCellColour(int currentCell){
-
-    std::vector<int> rgbVector;
-
-    if (currentCell==DEFAULT){
-        rgbVector = {255,255,255};
-    } 
-
-    else if (currentCell == WALL)
-    {
-        rgbVector = {20,20,20};
-    }
-
-    else if (currentCell == TARGET)
-    {
-        rgbVector = {255,0,0};
-    }
-    
-    else if (currentCell == START){
-        rgbVector= {0,0,255};
-    }
-
-    else if (currentCell == SEEN){
-        rgbVector= {255,0,255};
-    }
-
-    else if (currentCell == PATH){
-        rgbVector= {255,255,0};
-    }
-
-    return rgbVector;
-
 }
 
 std::vector<std::vector<int>> recalculatePath(std::vector<std::vector<int>> grid, int rows, int columns){
@@ -250,7 +129,7 @@ std::vector<std::vector<int>> recalculatePath(std::vector<std::vector<int>> grid
             }
         }
     }
-    return breadthFirst(grid,columns,rows);
+    return breadthFirst(grid,startCoords,targetCoords,columns,rows);
 }
 
 int main(){
@@ -279,7 +158,7 @@ int main(){
 
 
     int columns=25,rows=25;
-    std::vector<std::vector<int>> grid = initialiseGrid(columns,rows,DEFAULT);
+    std::vector<std::vector<int>> grid = initialiseGrid(columns,rows,DEFAULT,startCoords,targetCoords);
 
     int PIECE_SIZE=30;
 
@@ -291,7 +170,7 @@ int main(){
     bool exit = false;
     SDL_Point mousePos;
 
-    grid = breadthFirst(grid,columns,rows);
+    grid = breadthFirst(grid,startCoords,targetCoords,columns,rows);
 
     Uint32 initialTime = SDL_GetTicks();
     Uint32 currentTime;
@@ -319,7 +198,7 @@ int main(){
 
                 case SDL_KEYDOWN:
                     if(event.key.keysym.sym == SDLK_r){
-                        grid = initialiseGrid(columns,rows,DEFAULT);
+                        grid = initialiseGrid(columns,rows,DEFAULT,startCoords,targetCoords);
                     }
 
                     else if (event.key.keysym.sym == SDLK_LCTRL){
@@ -330,6 +209,11 @@ int main(){
                         grid = recalculatePath(grid,rows,columns);
 
                     }
+
+                    else if(event.key.keysym.sym == SDLK_q){
+                        exit = true;
+                    }
+
                     break;
 
                 case SDL_KEYUP:
@@ -408,9 +292,8 @@ int main(){
                 else if (movingStart){
                     if(SDL_PointInRect(&mousePos,&rect)&& grid[i][j] != TARGET){
 
-                        grid[startY][startX] = DEFAULT;
-                        startX = j;
-                        startY = i;
+                        grid[startCoords[1]][startCoords[0]] = DEFAULT;
+                        startCoords = {j,i};
                         grid[i][j] = START;
                     }
 
@@ -418,9 +301,8 @@ int main(){
 
                 else if (movingTarget){
                     if(SDL_PointInRect(&mousePos,&rect)&& grid[i][j] != START){
-                        grid[targetY][targetX] = DEFAULT;
-                        targetX = j;
-                        targetY = i;
+                        grid[targetCoords[1]][targetCoords[0]] = DEFAULT;
+                        targetCoords = {j,i};
                         grid[i][j] = TARGET;
                     }
                 }
