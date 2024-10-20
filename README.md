@@ -26,11 +26,7 @@ Note: you will need SDL2 installed and on your path. Alternatively when compilin
 
 Linux
 ```
-  chmod +x run.sh
-```
-
-```
-  ./run.sh
+  chmod +x run.sh && ./run.sh
 ```
 
 Windows (untested)
