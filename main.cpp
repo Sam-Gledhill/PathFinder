@@ -183,11 +183,6 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
                     return grid;
                 }
 
-                //If adjacent coord already in queue, continue
-                //if(coordIn(adjCoord,queue)|| coordIn(adjCoord,seenCoords)){
-                //    continue;
-                //}
-
                 seenCoords.push_back(adjCoord);
             }
         }
