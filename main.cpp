@@ -7,7 +7,7 @@
 #include <vector>
 #include <climits>
 
-#include "colours.h"
+#include "colours.h"            //Note: START,TARGET,DEFAULT etc defined here
 #include "vector-operations.h"
 
 std::vector<int> startCoords = {2,2};
