@@ -33,3 +33,21 @@ std::vector<int> getCellColour(int currentCell){
     return rgbVector;
 
 }
+
+std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, const std::vector<std::vector<int>> &coordVector, const int& COLOUR, const std::vector<int> &startCoords, const std::vector<int> &targetCoords){
+
+    for(auto coord: coordVector){
+
+        if(coord == startCoords){
+            continue;
+        }
+
+        if(coord == targetCoords){
+            continue;
+        }
+
+        grid[coord[1]][coord[0]] = COLOUR;
+    }
+
+    return grid;
+}
