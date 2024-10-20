@@ -5,8 +5,7 @@ Dynamic path-finding demo written in SDL2. The path is restricted to left/right/
 
 ## Demo
 
-![PathFindingDemo](https://github.com/user-attachments/assets/4aa87f1d-f538-4558-8cb9-5be59ceaa7e6)
-
+![PathfindingDemoV3](https://github.com/user-attachments/assets/10eb8047-a26f-4d16-ac13-d9a209e5dab8)
 
 ## Installation & Running
 
