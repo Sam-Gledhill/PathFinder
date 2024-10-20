@@ -10,6 +10,8 @@ Dynamic path-finding demo written in SDL2. The path is restricted to left/right/
 
 ## Installation & Running
 
+Note: you will need SDL2 installed and on your path. Alternatively when compiling use the `-I=path/to/sdl2` parameter.
+
 1- Clone the repo
 ```
   git clone https://github.com/Sam-Gledhill/PathFinder
@@ -33,7 +35,7 @@ Linux
 
 Windows (untested)
 ```
-  g++ main.cpp -o main.exe -lSDL2 -I /path/to/sdl2 && main.exe 
+  g++ main.cpp -o main.exe -lSDL2 && main.exe 
 ```
 
 ## Features
