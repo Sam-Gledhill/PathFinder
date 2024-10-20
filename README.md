@@ -1,7 +1,9 @@
 
 # Path Finder
 
-Dynamic path-finding demo written in SDL2
+Dynamic path-finding demo written in SDL2.
+
+The path is restricted only to left/right/up/down movements, and currently only implements the breadth-first pathfinding algorithm.
 
 ## Demo
 
