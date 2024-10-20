@@ -9,12 +9,7 @@
 #include <algorithm>
 #include <climits>
 
-const int DEFAULT = 0;
-const int WALL = 1;
-const int TARGET = 2;
-const int START = 3;
-const int SEEN = 4;
-const int PATH = 5;
+#include "colours.h"
 
 std::vector<int> startCoords = {2,2};
 std::vector<int> targetCoords = {22,22};
@@ -204,41 +199,6 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, c
 
     std::cout << "Should not reach here" << std::endl;
     return {};
-}
-
-
-std::vector<int> getCellColour(int currentCell){
-
-    std::vector<int> rgbVector;
-
-    if (currentCell==DEFAULT){
-        rgbVector = {255,255,255};
-    } 
-
-    else if (currentCell == WALL)
-    {
-        rgbVector = {20,20,20};
-    }
-
-    else if (currentCell == TARGET)
-    {
-        rgbVector = {255,0,0};
-    }
-    
-    else if (currentCell == START){
-        rgbVector= {0,0,255};
-    }
-
-    else if (currentCell == SEEN){
-        rgbVector= {255,0,255};
-    }
-
-    else if (currentCell == PATH){
-        rgbVector= {255,255,0};
-    }
-
-    return rgbVector;
-
 }
 
 std::vector<std::vector<int>> recalculatePath(std::vector<std::vector<int>> grid, int rows, int columns){

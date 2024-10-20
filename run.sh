@@ -1,2 +1,2 @@
 #!/usr/bin/bash
-g++ main.cpp -o main -lSDL2&& ./main
+g++ main.cpp colours.cpp -o main -lSDL2&& ./main
