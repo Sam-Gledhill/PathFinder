@@ -130,7 +130,7 @@ std::vector<std::vector<int>> drawCoords(std::vector<std::vector<int>>& grid, co
     return grid;
 }
 
-bool coordSeen(std::vector<int> coord,std::vector<std::vector<int>> seenVector){
+bool coordIn(std::vector<int> coord,std::vector<std::vector<int>> seenVector){
     for(auto x: seenVector){
         if(coord==x){
             return true;
@@ -152,11 +152,11 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
     auto pathMemory = initialisePathMemory(grid); //Pick a better variable name for this
 
     while(!targetFound && (itCounter < NUM_ITERATIONS) ){
-        std::vector<std::vector<int>> tmp;
+        std::vector<std::vector<int>> seenCoords;
         for(int i = 0; i< queue.size();i++){
             auto coord = queue[i];
 
-            if ( coordSeen(coord,visitedCoords) ){
+            if ( coordIn(coord,visitedCoords) ){
                 continue;
             }
 
@@ -164,7 +164,7 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
             for(auto adjCoord: adjacentTiles){
 
                 //abstract this logic
-                if(coordSeen(adjCoord,tmp) || pathMemory[adjCoord[1]][adjCoord[0]][0] != -1 || grid[adjCoord[1]][adjCoord[0]]==WALL){ //This probably needs to be here
+                if(coordIn(adjCoord,seenCoords) || pathMemory[adjCoord[1]][adjCoord[0]][0] != -1 || grid[adjCoord[1]][adjCoord[0]]==WALL){ //This probably needs to be here
                     continue;
                 }
 
@@ -175,7 +175,7 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
                     targetFound == true;
                     std::cout << "Target Found" << std::endl;
 
-                    // drawCoords(grid, visitedCoords); //also draw tmp?
+                    // drawCoords(grid, visitedCoords); //also draw seenCoords?
 
                     auto finalPath = getFinalPath(pathMemory);
 
@@ -184,23 +184,23 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, i
                 }
 
                 //If adjacent coord already in queue, continue
-                //if(coordSeen(adjCoord,queue)|| coordSeen(adjCoord,tmp)){
+                //if(coordIn(adjCoord,queue)|| coordIn(adjCoord,seenCoords)){
                 //    continue;
                 //}
 
-                tmp.push_back(adjCoord);
+                seenCoords.push_back(adjCoord);
             }
         }
         visitedCoords.insert(visitedCoords.end(),queue.begin(),queue.end());
 
-        if (tmp.size() == 0){
+        if (seenCoords.size() == 0){
             std::cout << "NO TARGET FOUND" << std::endl;
             return grid;
         }
 
-        queue = tmp;
+        queue = seenCoords;
 
-        tmp = {};
+        seenCoords = {};
         itCounter ++ ;
     }
 
