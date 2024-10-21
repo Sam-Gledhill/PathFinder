@@ -6,6 +6,7 @@ Dynamic path-finding demo written using SDL2. The path is restricted to left/rig
 ## Demo
 
 ![PathfindingDemoV3](https://github.com/user-attachments/assets/10eb8047-a26f-4d16-ac13-d9a209e5dab8)
+![AnimationDemo](https://github.com/user-attachments/assets/cf03b663-ec44-4f36-a462-c686143d138d)
 
 ## Installation & Running
 
