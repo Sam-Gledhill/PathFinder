@@ -12,7 +12,8 @@
 
 std::vector<int> startCoords = {2,2};
 std::vector<int> targetCoords = {22,22};
-
+std::vector< std::vector<std::vector<int>> > animationBuffer; //Awful way of doing this.
+size_t frameNumber = 0;
 
 std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultVal, const std::vector<int> &startCoords, const std::vector<int> &targetCoords){
 
@@ -113,6 +114,11 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, c
 
         queue = _toAddToQueue;
 
+        std::vector<std::vector<int>> animationFrame = grid;
+        animationFrame = drawCoords(animationFrame,queue,PATH,startCoords,targetCoords);
+        animationFrame = drawCoords(animationFrame,visitedCoords,SEEN,startCoords,targetCoords);
+        animationBuffer.push_back(animationFrame);
+
         _toAddToQueue = {};
         itCounter ++ ;
     }
@@ -175,7 +181,7 @@ int main(){
     Uint32 initialTime = SDL_GetTicks();
     Uint32 currentTime;
     Uint32 deltaTime;
-    float FPS = 30.0;
+    float FPS = 15;
 
     while(!exit){
 
@@ -306,13 +312,26 @@ int main(){
                         grid[i][j] = TARGET;
                     }
                 }
+                
+                std::vector<int> rgb;
 
-                std::vector<int> rgb = getCellColour(grid[i][j]);
+                if (animationBuffer.size() == 0){
+                    rgb = getCellColour(grid[i][j]);
+                }
+
+                else{
+                    rgb = getCellColour(animationBuffer[0][i][j]);
+                }
 
                 SDL_SetRenderDrawColor(rend, rgb[0], rgb[1], rgb[2], 1);
                 SDL_RenderDrawRect(rend, &rect);
                 SDL_RenderFillRect(rend, &rect);
             }
+        }
+
+
+        if(animationBuffer.size() != 0){
+            animationBuffer.erase(animationBuffer.begin());
         }
 
         // triggers the double buffers
