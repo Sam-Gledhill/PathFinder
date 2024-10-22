@@ -182,7 +182,8 @@ int main(){
     Uint32 initialTime = SDL_GetTicks();
     Uint32 currentTime;
     Uint32 deltaTime;
-    float FPS = 15;
+    float FPS = 30;
+    Uint32 frameCounter = 0;
 
     while(!exit){
 
@@ -336,12 +337,15 @@ int main(){
         }
 
 
-        if(animationBuffer.size() != 0){
+        if(animationBuffer.size() != 0 && frameCounter%2==0){
             animationBuffer.erase(animationBuffer.begin());
         }
 
         // triggers the double buffers
         // for multiple rendering
+
+        frameCounter++;
+
         SDL_RenderPresent(rend);
 
     }
