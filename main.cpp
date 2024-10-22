@@ -135,6 +135,7 @@ std::vector<std::vector<int>> recalculatePath(std::vector<std::vector<int>> grid
             }
         }
     }
+    animationBuffer = {};
     return breadthFirst(grid,startCoords,targetCoords,columns,rows);
 }
 
@@ -205,6 +206,7 @@ int main(){
                 case SDL_KEYDOWN:
                     if(event.key.keysym.sym == SDLK_r){
                         grid = initialiseGrid(columns,rows,DEFAULT,startCoords,targetCoords);
+                        animationBuffer = {};
                     }
 
                     else if (event.key.keysym.sym == SDLK_LCTRL){
@@ -286,12 +288,14 @@ int main(){
                 if(drawMode){
                     if(SDL_PointInRect(&mousePos,&rect) && grid[i][j] != TARGET && grid[i][j] != START){
                         grid[i][j] = WALL;
+                        animationBuffer = {};
                     }
                 }
 
                 else if (eraseMode){
                     if(SDL_PointInRect(&mousePos,&rect)&& grid[i][j] != TARGET && grid[i][j] != START){
                         grid[i][j] = DEFAULT;
+                        animationBuffer = {};
                     }
                 }
 
@@ -301,6 +305,7 @@ int main(){
                         grid[startCoords[1]][startCoords[0]] = DEFAULT;
                         startCoords = {j,i};
                         grid[i][j] = START;
+                        animationBuffer = {};
                     }
 
                 }
@@ -310,6 +315,7 @@ int main(){
                         grid[targetCoords[1]][targetCoords[0]] = DEFAULT;
                         targetCoords = {j,i};
                         grid[i][j] = TARGET;
+                        animationBuffer = {};
                     }
                 }
                 
