@@ -56,6 +56,7 @@ std::vector<std::vector<int>> getFinalPath(const std::vector<std::vector<std::ve
     std::vector<int> currentCoord = pathMemory[targetCoords[1]][targetCoords[0]];
 
     size_t MAX_ITER = INT_MAX;
+    size_t MAX_ITER = INT_MAX; //Set to a limit - otherwise causes a catastrophic memory leak if start coords cannot be count. Perhaps no longer necessary.
     size_t iter = 0;
 
     while (!(currentCoord[0] == startCoords[0] && currentCoord[1] == startCoords[1])){
