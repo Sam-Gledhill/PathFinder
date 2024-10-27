@@ -23,7 +23,7 @@ std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultV
     * @param rows   n-rows in the 2d array
     * @param defaultVal initial value of the array elements
     * @param startCoords    Start coordinate for pathfinding [x,y]
-    * @param targetCoords   Target coordinate for pathfinding
+    * @param targetCoords   Target coordinate for pathfinding [x,y]
     ******************************************************************************/
     std::vector<int> subArray(columns,defaultVal);
     std::vector<std::vector<int>> grid(rows,subArray);
@@ -35,7 +35,6 @@ std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultV
 }
 
 std::vector<std::vector<std::vector<int>>> initialisePathMemory(const std::vector<std::vector<int>> &grid){
-
     /**************************************************************************//**
     * Initialises pathmemory - a 2d array the same shape as 'grid'. Each element is a coordinate which denotes the previously visited coordinate in the path-finding algorithm. Initialised to {-1,-1} for clarity on which coords have already been visited.
     *
@@ -50,16 +49,21 @@ std::vector<std::vector<std::vector<int>>> initialisePathMemory(const std::vecto
 }
 
 std::vector<std::vector<int>> getFinalPath(const std::vector<std::vector<std::vector<int>>>& pathMemory, const std::vector<int> &startCoords, const std::vector<int> &targetCoords){
+    /**************************************************************************//**
+    * When the target has been found- this function is called to traverse (in reverse) the path taken to the target.
+    *
+    * @param pathMemory    2D array containing the previous step in the path
+    * @param startCoords    Start coordinate for pathfinding [x,y]
+    * @param targetCoords   Target coordinate for pathfinding [x,y]
+    ******************************************************************************/
 
     std::vector<std::vector<int>> finalPath;
 
     std::vector<int> currentCoord = pathMemory[targetCoords[1]][targetCoords[0]];
 
-    size_t MAX_ITER = INT_MAX;
     size_t MAX_ITER = INT_MAX; //Set to a limit - otherwise causes a catastrophic memory leak if start coords cannot be count. Perhaps no longer necessary.
     size_t iter = 0;
 
-    while (!(currentCoord[0] == startCoords[0] && currentCoord[1] == startCoords[1])){
     while (!(currentCoord == startCoords)){
         finalPath.push_back(currentCoord);
         currentCoord = pathMemory[currentCoord[1]][currentCoord[0]];
@@ -75,6 +79,19 @@ std::vector<std::vector<int>> getFinalPath(const std::vector<std::vector<std::ve
 }
 
 std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, const std::vector<int> &startCoords, const std::vector<int> &targetCoords,int width, int height){
+    /**************************************************************************//**
+    * Performs a breadth-first pathfinding algorithm
+    *
+    * Starting from startCoords, adds the adjacent tiles to a queue and checks if they are the target.
+    * Adjacent tiles are then taken from these adjacent tiles, and the path taken is recorded within pathMemory.
+    * This process is repeated until the target is found, and the grid - the 2d grid to be drawn is returned.
+    *
+    * @param grid    n-columns in the 2d array
+    * @param startCoords    Start coordinate for pathfinding [x,y]
+    * @param targetCoords   Target coordinate for pathfinding [x,y]
+    * @param width  Number of columns in the grid - used for finding adjacent tiles
+    * @param height Number of rows in the grid - used for finding adjacent tiles
+    ******************************************************************************/
 
     std::vector<std::vector<int>> visitedCoords;
     std::vector<std::vector<int>> queue{{startCoords[0],startCoords[1]}};
@@ -142,6 +159,13 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, c
 }
 
 std::vector<std::vector<int>> recalculatePath(std::vector<std::vector<int>> grid, int rows, int columns){
+    /**************************************************************************//**
+    * Re-runs the pathfinding algorithm while retaining the wall information.
+    *
+    * @param grid    n-columns in the 2d array
+    * @param columns    n-columns in the 2d array
+    * @param rows   n-rows in the 2d array
+    ******************************************************************************/
     for(int i = 0; i < rows; i++){
         for(int j = 0; j < columns; j++){
             if(grid[i][j]== PATH){
