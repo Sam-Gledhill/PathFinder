@@ -59,6 +59,7 @@ std::vector<std::vector<int>> getFinalPath(const std::vector<std::vector<std::ve
     size_t iter = 0;
 
     while (!(currentCoord[0] == startCoords[0] && currentCoord[1] == startCoords[1])){
+    while (!(currentCoord == startCoords)){
         finalPath.push_back(currentCoord);
         currentCoord = pathMemory[currentCoord[1]][currentCoord[0]];
         iter ++;
