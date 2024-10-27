@@ -325,27 +325,31 @@ int main(){
 
 
         SDL_GetMouseState(&mousePos.x, &mousePos.y);
+
+        //Loops through each cell in the grid and
         for(int i=0;i<grid.size();i++){
             for(int j=0;j<grid[0].size();j++){
+
                 SDL_Rect rect{PIECE_SIZE*j + 1, PIECE_SIZE*i + 1, PIECE_SIZE, PIECE_SIZE};
 
-                if(drawMode){
-                    if(SDL_PointInRect(&mousePos,&rect) && grid[i][j] != TARGET && grid[i][j] != START){
+                if( !SDL_PointInRect(&mousePos,&rect) ){}
+
+                else if(drawMode){
+                    if(grid[i][j] != TARGET && grid[i][j] != START){
                         grid[i][j] = WALL;
                         animationBuffer = {};
                     }
                 }
 
                 else if (eraseMode){
-                    if(SDL_PointInRect(&mousePos,&rect)&& grid[i][j] != TARGET && grid[i][j] != START){
+                    if(grid[i][j] != TARGET && grid[i][j] != START){
                         grid[i][j] = DEFAULT;
                         animationBuffer = {};
                     }
                 }
 
                 else if (movingStart){
-                    if(SDL_PointInRect(&mousePos,&rect)&& grid[i][j] != TARGET){
-
+                    if(grid[i][j] != TARGET){
                         grid[startCoords[1]][startCoords[0]] = DEFAULT;
                         startCoords = {j,i};
                         grid[i][j] = START;
