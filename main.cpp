@@ -10,13 +10,21 @@
 #include "colours.h"            //Note: START,TARGET,DEFAULT etc defined here
 #include "vector-operations.h"
 
-std::vector<int> startCoords = {2,2};
+std::vector<int> startCoords = {2,2};   //Todo: move these away from global scope
 std::vector<int> targetCoords = {22,22};
 std::vector< std::vector<std::vector<int>> > animationBuffer; //Awful way of doing this.
 size_t frameNumber = 0;
 
 std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultVal, const std::vector<int> &startCoords, const std::vector<int> &targetCoords){
-
+    /**************************************************************************//**
+    * Initialises the grid - a 2d int array that contains all the visual information about the scene - will be drawn to the screen.
+    *
+    * @param columns    n-columns in the 2d array
+    * @param rows   n-rows in the 2d array
+    * @param defaultVal initial value of the array elements
+    * @param startCoords    Start coordinate for pathfinding [x,y]
+    * @param targetCoords   Target coordinate for pathfinding
+    ******************************************************************************/
     std::vector<int> subArray(columns,defaultVal);
     std::vector<std::vector<int>> grid(rows,subArray);
 
@@ -28,7 +36,11 @@ std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultV
 
 std::vector<std::vector<std::vector<int>>> initialisePathMemory(const std::vector<std::vector<int>> &grid){
 
-    //Creates a second array which tells the program where the previous visited point is.
+    /**************************************************************************//**
+    * Initialises pathmemory - a 2d array the same shape as 'grid'. Each element is a coordinate which denotes the previously visited coordinate in the path-finding algorithm. Initialised to {-1,-1} for clarity on which coords have already been visited.
+    *
+    * @param &grid    A 2d int array that contains all the visual information about the scene - will be drawn to the screen.
+    ******************************************************************************/
 
     std::vector<int> coords(2,-1);
     std::vector<std::vector<int>> subArray(grid[0].size(),coords);
