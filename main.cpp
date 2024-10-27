@@ -169,6 +169,7 @@ int main(){
 
     int PIECE_SIZE=30;
 
+    bool animationMode=false;
     bool ctrlModifier=false;
     bool movingStart=false;
     bool movingTarget=false;
@@ -215,7 +216,11 @@ int main(){
                     }
 
                     else if(event.key.keysym.sym == SDLK_f){
-                        grid = recalculatePath(grid,rows,columns);
+                        animationMode = !animationMode; //Toggle animation mode
+                        animationBuffer = {};
+                        if(animationMode){
+                            recalculatePath(grid,rows,columns);
+                        }
 
                     }
 
@@ -322,7 +327,7 @@ int main(){
                 
                 std::vector<int> rgb;
 
-                if (animationBuffer.size() == 0){
+                if (animationBuffer.size() == 0 || !animationMode){
                     rgb = getCellColour(grid[i][j]);
                 }
 
@@ -337,16 +342,13 @@ int main(){
         }
 
 
-        if(animationBuffer.size() != 0 && frameCounter%2==0){
+        if(animationBuffer.size() != 0 && frameCounter%2==0 && animationMode){
             animationBuffer.erase(animationBuffer.begin());
         }
 
-        // triggers the double buffers
-        // for multiple rendering
-
         frameCounter++;
 
-        SDL_RenderPresent(rend);
+        SDL_RenderPresent(rend); //Triggers double buffers - smoother rendering
 
     }
 
