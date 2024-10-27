@@ -207,6 +207,7 @@ int main(){
 
     int PIECE_SIZE=30;
 
+    //Modifiers related to input events
     bool animationMode=false;
     bool ctrlModifier=false;
     bool movingStart=false;
@@ -234,7 +235,7 @@ int main(){
         }   
         initialTime = currentTime;
 
-
+        //Event handling starts
         while (SDL_PollEvent(&event))
         {
             switch(event.type){
@@ -318,6 +319,7 @@ int main(){
             }
             
         }
+        //Event handling ends.
 
         // Fills screen with black
         SDL_SetRenderDrawColor(rend, 0, 0, 0, 1);
@@ -326,7 +328,7 @@ int main(){
 
         SDL_GetMouseState(&mousePos.x, &mousePos.y);
 
-        //Loops through each cell in the grid and
+        //Loops through each cell in the grid and modifies the current cell based on current input event.
         for(int i=0;i<grid.size();i++){
             for(int j=0;j<grid[0].size();j++){
 
@@ -367,23 +369,22 @@ int main(){
                     }
                 }
                 
+                //Map the colour of the cell to the values defined in colours.h
                 std::vector<int> rgb;
-
                 if (animationBuffer.size() == 0 || !animationMode){
                     rgb = getCellColour(grid[i][j]);
                 }
-
                 else{
                     rgb = getCellColour(animationBuffer[0][i][j]);
                 }
-
                 SDL_SetRenderDrawColor(rend, rgb[0], rgb[1], rgb[2], 1);
+
                 SDL_RenderDrawRect(rend, &rect);
                 SDL_RenderFillRect(rend, &rect);
             }
         }
 
-
+        //Remove the first element of the animation buffer every other frame.
         if(animationBuffer.size() != 0 && frameCounter%2==0 && animationMode){
             animationBuffer.erase(animationBuffer.begin());
         }
