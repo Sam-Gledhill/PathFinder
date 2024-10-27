@@ -12,7 +12,8 @@
 
 std::vector<int> startCoords = {2,2};
 std::vector<int> targetCoords = {22,22};
-
+std::vector< std::vector<std::vector<int>> > animationBuffer; //Awful way of doing this.
+size_t frameNumber = 0;
 
 std::vector<std::vector<int>> initialiseGrid(int columns, int rows, int defaultVal, const std::vector<int> &startCoords, const std::vector<int> &targetCoords){
 
@@ -113,6 +114,11 @@ std::vector<std::vector<int>> breadthFirst(std::vector<std::vector<int>> grid, c
 
         queue = _toAddToQueue;
 
+        std::vector<std::vector<int>> animationFrame = grid;
+        animationFrame = drawCoords(animationFrame,queue,PATH,startCoords,targetCoords);
+        animationFrame = drawCoords(animationFrame,visitedCoords,SEEN,startCoords,targetCoords);
+        animationBuffer.push_back(animationFrame);
+
         _toAddToQueue = {};
         itCounter ++ ;
     }
@@ -129,6 +135,7 @@ std::vector<std::vector<int>> recalculatePath(std::vector<std::vector<int>> grid
             }
         }
     }
+    animationBuffer = {};
     return breadthFirst(grid,startCoords,targetCoords,columns,rows);
 }
 
@@ -162,6 +169,7 @@ int main(){
 
     int PIECE_SIZE=30;
 
+    bool animationMode=false;
     bool ctrlModifier=false;
     bool movingStart=false;
     bool movingTarget=false;
@@ -175,7 +183,8 @@ int main(){
     Uint32 initialTime = SDL_GetTicks();
     Uint32 currentTime;
     Uint32 deltaTime;
-    float FPS = 30.0;
+    float FPS = 30;
+    Uint32 frameCounter = 0;
 
     while(!exit){
 
@@ -199,6 +208,7 @@ int main(){
                 case SDL_KEYDOWN:
                     if(event.key.keysym.sym == SDLK_r){
                         grid = initialiseGrid(columns,rows,DEFAULT,startCoords,targetCoords);
+                        animationBuffer = {};
                     }
 
                     else if (event.key.keysym.sym == SDLK_LCTRL){
@@ -206,7 +216,11 @@ int main(){
                     }
 
                     else if(event.key.keysym.sym == SDLK_f){
-                        grid = recalculatePath(grid,rows,columns);
+                        animationMode = !animationMode; //Toggle animation mode
+                        animationBuffer = {};
+                        if(animationMode){
+                            recalculatePath(grid,rows,columns);
+                        }
 
                     }
 
@@ -280,12 +294,14 @@ int main(){
                 if(drawMode){
                     if(SDL_PointInRect(&mousePos,&rect) && grid[i][j] != TARGET && grid[i][j] != START){
                         grid[i][j] = WALL;
+                        animationBuffer = {};
                     }
                 }
 
                 else if (eraseMode){
                     if(SDL_PointInRect(&mousePos,&rect)&& grid[i][j] != TARGET && grid[i][j] != START){
                         grid[i][j] = DEFAULT;
+                        animationBuffer = {};
                     }
                 }
 
@@ -295,6 +311,7 @@ int main(){
                         grid[startCoords[1]][startCoords[0]] = DEFAULT;
                         startCoords = {j,i};
                         grid[i][j] = START;
+                        animationBuffer = {};
                     }
 
                 }
@@ -304,10 +321,19 @@ int main(){
                         grid[targetCoords[1]][targetCoords[0]] = DEFAULT;
                         targetCoords = {j,i};
                         grid[i][j] = TARGET;
+                        animationBuffer = {};
                     }
                 }
+                
+                std::vector<int> rgb;
 
-                std::vector<int> rgb = getCellColour(grid[i][j]);
+                if (animationBuffer.size() == 0 || !animationMode){
+                    rgb = getCellColour(grid[i][j]);
+                }
+
+                else{
+                    rgb = getCellColour(animationBuffer[0][i][j]);
+                }
 
                 SDL_SetRenderDrawColor(rend, rgb[0], rgb[1], rgb[2], 1);
                 SDL_RenderDrawRect(rend, &rect);
@@ -315,9 +341,14 @@ int main(){
             }
         }
 
-        // triggers the double buffers
-        // for multiple rendering
-        SDL_RenderPresent(rend);
+
+        if(animationBuffer.size() != 0 && frameCounter%2==0 && animationMode){
+            animationBuffer.erase(animationBuffer.begin());
+        }
+
+        frameCounter++;
+
+        SDL_RenderPresent(rend); //Triggers double buffers - smoother rendering
 
     }
 
