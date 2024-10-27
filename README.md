@@ -31,7 +31,7 @@ Linux
 
 Windows (untested)
 ```
-  g++ main.cpp -o main.exe -lSDL2 && main.exe 
+  g++ main.cpp colours.cpp vector-operations.cpp -o main.exe -lSDL2 && main.exe
 ```
 
 ## Features
