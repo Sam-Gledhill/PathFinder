@@ -38,7 +38,7 @@ Windows (untested)
 
 - Dynamic path-finding around obstacles
 - Ability to draw and remove new obstacles
-- Display mode for showing path-finding algorithm in real-time (WIP)
+- Animation mode for showing the process behind the pathfinding algorithm.
 - Mulitple path-finding algorithms to choose from (WIP)
 - SDL2
 
